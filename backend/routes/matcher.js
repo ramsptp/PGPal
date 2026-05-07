@@ -13,18 +13,16 @@ const router  = express.Router();
 
 // Scoring weights for each preference field
 const WEIGHTS = {
-  sleepSchedule:  40,   // Most important lifestyle factor
-  smokingAllowed: 30,   // Non-negotiable for many people
-  guestPolicy:    20,   // Moderate importance
-  hobbies:        10    // Bonus points per shared hobby
+  sleepSchedule: 50,   // Most important lifestyle factor
+  guestPolicy:   30,   // Moderate importance
+  hobbies:       10    // Bonus points per shared hobby
 };
 
 function calculateScore(p1, p2) {
   let score = 0;
 
-  if (p1.sleepSchedule === p2.sleepSchedule)   score += WEIGHTS.sleepSchedule;
-  if (p1.smokingAllowed === p2.smokingAllowed)  score += WEIGHTS.smokingAllowed;
-  if (p1.guestPolicy === p2.guestPolicy)        score += WEIGHTS.guestPolicy;
+  if (p1.sleepSchedule === p2.sleepSchedule) score += WEIGHTS.sleepSchedule;
+  if (p1.guestPolicy === p2.guestPolicy)     score += WEIGHTS.guestPolicy;
 
   // Count how many hobbies are shared
   const sharedHobbies = (p1.hobbies || []).filter(h => (p2.hobbies || []).includes(h));

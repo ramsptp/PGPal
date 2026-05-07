@@ -15,7 +15,7 @@ const RoomSchema = new mongoose.Schema({
 
   type: {
     type: String,
-    enum: ['Single', 'Double', 'Triple'],  // Only these values are allowed
+    enum: ['Single', 'Double', 'Triple', 'Quad', '5-Sharing'],
     required: true
   },
 
@@ -25,10 +25,10 @@ const RoomSchema = new mongoose.Schema({
     min: 0
   },
 
-  // Maximum number of beds in this room
+  // Auto-derived from type — Single=1, Double=2, Triple=3, Quad=4, 5-Sharing=5
   capacity: {
     type: Number,
-    required: true
+    default: 1
   },
 
   // How many tenants are currently assigned
@@ -52,8 +52,11 @@ const RoomSchema = new mongoose.Schema({
 
 }, { timestamps: true });  // Adds createdAt and updatedAt automatically
 
-// Auto-update status whenever occupiedBeds changes
+const TYPE_CAPACITY = { 'Single': 1, 'Double': 2, 'Triple': 3, 'Quad': 4, '5-Sharing': 5 };
+
 RoomSchema.pre('save', function(next) {
+  // Capacity is always derived from the room type — no manual entry needed
+  if (this.type) this.capacity = TYPE_CAPACITY[this.type] || 1;
   this.status = (this.occupiedBeds >= this.capacity) ? 'Occupied' : 'Vacant';
   next();
 });

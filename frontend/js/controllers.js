@@ -8,11 +8,20 @@ var app = angular.module('pgpalApp');
 app.controller('AuthCtrl', function($scope, $http, $location, AuthService) {
 
   $scope.loginData    = {};
-  $scope.registerData = { preferences: { hobbies: [] } };
+  $scope.registerData = { preferences: { hobbies: [] }, roomPreferences: [] };
   $scope.errorMsg     = '';
   $scope.hobbyInput   = '';
+  $scope.roomTypes    = ['Single', 'Double', 'Triple', 'Quad', '5-Sharing'];
 
-  // Add a hobby tag to the list
+  $scope.toggleRoomPref = function(type) {
+    var idx = $scope.registerData.roomPreferences.indexOf(type);
+    if (idx === -1) {
+      $scope.registerData.roomPreferences.push(type);
+    } else {
+      $scope.registerData.roomPreferences.splice(idx, 1);
+    }
+  };
+
   $scope.addHobby = function() {
     var h = $scope.hobbyInput.trim();
     if (h && $scope.registerData.preferences.hobbies.indexOf(h) === -1) {
@@ -132,10 +141,9 @@ app.controller('RoomCtrl', function($scope, $http) {
 
 // ── Tenant Admin Controller ──────────────────────────────────
 app.controller('TenantAdminCtrl', function($scope, $http) {
-  $scope.tenants       = [];
-  $scope.rooms         = [];
-  $scope.assignRoomId  = '';
-  $scope.message       = '';
+  $scope.tenants = [];
+  $scope.rooms   = [];
+  $scope.message = '';
 
   function loadAll() {
     $http.get('/api/tenants').then(function(res) { $scope.tenants = res.data; });
@@ -143,10 +151,10 @@ app.controller('TenantAdminCtrl', function($scope, $http) {
   }
   loadAll();
 
-  // PUT /api/tenants/:id/assign-room
-  $scope.assignRoom = function(tenantId) {
-    if (!$scope.assignRoomId) return;
-    $http.put('/api/tenants/' + tenantId + '/assign-room', { roomId: $scope.assignRoomId })
+  // PUT /api/tenants/:id/assign-room — roomId passed directly from the row's ng-model
+  $scope.assignRoom = function(tenantId, roomId) {
+    if (!roomId) { $scope.message = 'Please select a room first.'; return; }
+    $http.put('/api/tenants/' + tenantId + '/assign-room', { roomId: roomId })
       .then(function() {
         $scope.message = 'Room assigned successfully!';
         loadAll();

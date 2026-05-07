@@ -116,9 +116,19 @@ app.config(function($httpProvider) {
 });
 
 // ── Root Controller — Handles navbar and global state ────────
-app.controller('AppCtrl', function($scope, $location, AuthService) {
-  $scope.isLoggedIn = AuthService.isLoggedIn;
+app.controller('AppCtrl', function($scope, $location, $window, AuthService) {
+  $scope.isLoggedIn  = AuthService.isLoggedIn;
   $scope.currentUser = AuthService.getUser();
+
+  // Restore dark mode preference across sessions
+  $scope.darkMode = $window.localStorage.getItem('pgpal_dark') === 'true';
+  if ($scope.darkMode) { $window.document.body.classList.add('dark-mode'); }
+
+  $scope.toggleDark = function() {
+    $scope.darkMode = !$scope.darkMode;
+    $window.document.body.classList.toggle('dark-mode', $scope.darkMode);
+    $window.localStorage.setItem('pgpal_dark', $scope.darkMode);
+  };
 
   $scope.logout = function() {
     AuthService.logout();

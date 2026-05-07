@@ -58,8 +58,14 @@ const TenantSchema = new mongoose.Schema({
     default: 'tenant'
   },
 
+  // Room types the tenant is willing to share (shown to admin)
+  roomPreferences: {
+    type: [String],
+    enum: ['Single', 'Double', 'Triple', 'Quad', '5-Sharing'],
+    default: []
+  },
+
   // ── Roommate Matcher Attributes ───────────────────────────
-  // These JSON fields are compared to find compatible roommates
   preferences: {
     sleepSchedule: {
       type: String,
@@ -69,10 +75,6 @@ const TenantSchema = new mongoose.Schema({
     hobbies: {
       type: [String],   // e.g. ["Reading", "Gaming", "Music"]
       default: []
-    },
-    smokingAllowed: {
-      type: Boolean,
-      default: false
     },
     guestPolicy: {
       type: String,

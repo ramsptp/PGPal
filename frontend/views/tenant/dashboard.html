@@ -45,9 +45,12 @@
     <!-- ── Preferences (for Roommate Matcher context) ────────── -->
     <div class="table-card mt-4">
       <h4 style="margin-bottom:14px;">Your Roommate Preferences</h4>
-      <p><strong>Sleep Schedule:</strong> {{ profile.preferences.sleepSchedule }}</p>
+      <p><strong>Preferred Room Types:</strong>
+        <span class="chip" ng-repeat="p in profile.roomPreferences">{{ p }}</span>
+        <span ng-if="!profile.roomPreferences || profile.roomPreferences.length === 0" class="text-muted">None selected</span>
+      </p>
+      <p style="margin-top:10px;"><strong>Sleep Schedule:</strong> {{ profile.preferences.sleepSchedule }}</p>
       <p><strong>Guest Policy:</strong> {{ profile.preferences.guestPolicy }}</p>
-      <p><strong>Smoking:</strong> {{ profile.preferences.smokingAllowed ? 'Allowed' : 'Not Allowed' }}</p>
       <p><strong>Hobbies:</strong>
         <span class="chip" ng-repeat="h in profile.preferences.hobbies">{{ h }}</span>
         <span ng-if="profile.preferences.hobbies.length === 0" class="text-muted">None listed</span>

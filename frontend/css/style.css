@@ -251,6 +251,140 @@ tbody tr:hover { background: #fafafa; }
 }
 .page-area { flex: 1; padding: 28px; overflow-y: auto; }
 
+/* ── Inline assign select — bypasses Bootstrap width:100% ───── */
+.assign-select {
+  display: inline-block;
+  width: 175px;
+  padding: 4px 8px;
+  font-size: 13px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  vertical-align: middle;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+body.dark-mode .assign-select {
+  background: #262626 !important;
+  border-color: #3a3a3a !important;
+  color: #e8e8e8 !important;
+}
+
+/* ── Preference checkboxes ──────────────────────────────────── */
+.pref-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--light-bg);
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: normal;
+  transition: background 0.2s;
+}
+.pref-checkbox input { cursor: pointer; }
+.pref-checkbox:has(input:checked) {
+  background: #d1ecf1;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Dark Mode — Carbon Black ───────────────────────────────── */
+body.dark-mode {
+  --light-bg:  #111111;
+  --card-bg:   #1c1c1c;
+  --text:      #e8e8e8;
+  --muted:     #999999;
+  --primary:   #0d0d0d;
+}
+
+body.dark-mode {
+  background: #111111;
+  color: #e8e8e8;
+}
+
+body.dark-mode .navbar {
+  background: #0d0d0d;
+  border-bottom: 1px solid #2e2e2e;
+}
+
+body.dark-mode .table-card,
+body.dark-mode .form-card,
+body.dark-mode .stat-card,
+body.dark-mode .notice-card,
+body.dark-mode .matcher-card {
+  background: #1c1c1c;
+  color: #e8e8e8;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .auth-card {
+  background: #1c1c1c;
+  color: #e8e8e8;
+}
+
+body.dark-mode .auth-wrapper {
+  background: #111111;
+}
+
+/* Table rows */
+body.dark-mode thead th {
+  background: #141414;
+  color: #999;
+  border-bottom: 1px solid #2e2e2e;
+}
+body.dark-mode tbody td {
+  border-color: #2e2e2e;
+  color: #e8e8e8;
+}
+body.dark-mode tbody tr:hover { background: #222222; }
+
+/* All inputs and selects */
+body.dark-mode .form-control,
+body.dark-mode select.form-control,
+body.dark-mode select.form-control-sm {
+  background: #262626 !important;
+  border-color: #3a3a3a !important;
+  color: #e8e8e8 !important;
+}
+body.dark-mode .form-control:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+}
+body.dark-mode select option {
+  background: #262626;
+  color: #e8e8e8;
+}
+
+/* Misc */
+body.dark-mode .chip          { background: #2a2a2a; color: #60b4f0; }
+body.dark-mode .pref-checkbox { background: #1c1c1c; border-color: #3a3a3a; color: #e8e8e8; }
+body.dark-mode .notice-body   { color: #ccc; }
+body.dark-mode .notice-date   { color: #888; }
+body.dark-mode .sidebar       { background: #0d0d0d; border-right: 1px solid #2e2e2e; }
+body.dark-mode hr             { border-color: #2e2e2e; }
+body.dark-mode .page-title    { color: #60b4f0; }
+body.dark-mode .stat-number   { color: #e8e8e8; }
+body.dark-mode h4, body.dark-mode strong { color: #e8e8e8; }
+body.dark-mode .alert-success { background: #1a2e1a; color: #7ddb7d; border-color: #2a4a2a; }
+body.dark-mode .alert-danger  { background: #2e1a1a; color: #f07070; border-color: #4a2a2a; }
+
+/* ── Dark mode toggle button ────────────────────────────────── */
+.btn-darkmode {
+  background: transparent;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-left: 12px;
+  transition: all 0.2s;
+}
+.btn-darkmode:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
 /* ── Utility ────────────────────────────────────────────────── */
 .mt-2  { margin-top: 8px; }
 .mt-4  { margin-top: 16px; }

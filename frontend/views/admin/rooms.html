@@ -66,20 +66,17 @@
         <div class="form-group">
           <label>Type</label>
           <select class="form-control" ng-model="newRoom.type" required>
-            <option value="Single">Single</option>
-            <option value="Double">Double</option>
-            <option value="Triple">Triple</option>
+            <option value="Single">Single (1 person)</option>
+            <option value="Double">Double (2 sharing)</option>
+            <option value="Triple">Triple (3 sharing)</option>
+            <option value="Quad">Quad (4 sharing)</option>
+            <option value="5-Sharing">5-Sharing</option>
           </select>
         </div>
         <div class="form-group">
           <label>Price Per Month (₹)</label>
           <input type="number" class="form-control"
                  ng-model="newRoom.pricePerMonth" placeholder="e.g. 5000" required>
-        </div>
-        <div class="form-group">
-          <label>Capacity (beds)</label>
-          <input type="number" class="form-control"
-                 ng-model="newRoom.capacity" placeholder="e.g. 2" required>
         </div>
         <div class="form-group">
           <label>Amenities</label>

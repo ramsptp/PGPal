@@ -51,13 +51,17 @@ router.post('/', verifyToken, adminOnly, async (req, res) => {
   }
 });
 
+const TYPE_CAPACITY = { 'Single': 1, 'Double': 2, 'Triple': 3, 'Quad': 4, '5-Sharing': 5 };
+
 // PUT /api/rooms/:id — Update room details (Admin only)
 router.put('/:id', verifyToken, adminOnly, async (req, res) => {
   try {
+    // findByIdAndUpdate skips pre-save hooks, so set capacity manually
+    if (req.body.type) req.body.capacity = TYPE_CAPACITY[req.body.type] || 1;
     const room = await Room.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true }  // Return updated doc and run schema validators
+      { new: true, runValidators: true }
     );
     if (!room) return res.status(404).json({ message: 'Room not found' });
     res.json(room);

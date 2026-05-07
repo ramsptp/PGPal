@@ -40,6 +40,9 @@
         <a href="#!/tenant/notices">Notice Board</a>
         <a href="#!/tenant/matcher">Roommate Matcher</a>
       </span>
+      <button class="btn-darkmode" ng-click="toggleDark()">
+        {{ darkMode ? '☀ Light' : '☾ Dark' }}
+      </button>
       <button class="btn-logout" ng-click="logout()">Logout</button>
     </div>
   </nav>

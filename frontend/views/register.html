@@ -1,6 +1,6 @@
 <!-- views/register.html — Tenant Registration -->
 <div class="auth-wrapper">
-  <div class="auth-card" style="max-width:520px;">
+  <div class="auth-card" style="max-width:540px;">
 
     <div class="auth-logo">PG<span>Pal</span></div>
     <h2>Create Account</h2>
@@ -25,7 +25,19 @@
         <input type="password" class="form-control" ng-model="registerData.password" required>
       </div>
 
-      <!-- Roommate Preferences Section -->
+      <!-- Room Sharing Preferences -->
+      <hr>
+      <p style="font-weight:600;margin-bottom:12px;">Room Preferences <small class="text-muted">(select all you're okay with)</small></p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;">
+        <label class="pref-checkbox" ng-repeat="type in roomTypes">
+          <input type="checkbox"
+                 ng-checked="registerData.roomPreferences.indexOf(type) !== -1"
+                 ng-click="toggleRoomPref(type)">
+          {{ type }}
+        </label>
+      </div>
+
+      <!-- Roommate Preferences -->
       <hr>
       <p style="font-weight:600;margin-bottom:12px;">Roommate Preferences</p>
 
@@ -48,18 +60,10 @@
       </div>
 
       <div class="form-group">
-        <label>Smoking Allowed?</label>
-        <select class="form-control" ng-model="registerData.preferences.smokingAllowed">
-          <option value="false">No</option>
-          <option value="true">Yes</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Hobbies (press Enter to add)</label>
+        <label>Hobbies <small class="text-muted">(press Enter or click Add)</small></label>
         <div style="display:flex;gap:8px;">
           <input type="text" class="form-control" ng-model="hobbyInput"
-                 ng-keydown="$event.keyCode===13 && addHobby()"
+                 ng-keydown="$event.keyCode===13 && ($event.preventDefault() || addHobby())"
                  placeholder="e.g. Gaming">
           <button type="button" class="btn btn-primary" ng-click="addHobby()">Add</button>
         </div>
@@ -70,9 +74,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-success" style="width:100%;">
-        Register
-      </button>
+      <button type="submit" class="btn btn-success" style="width:100%;">Register</button>
     </form>
 
     <p class="text-muted mt-4" style="text-align:center;">
