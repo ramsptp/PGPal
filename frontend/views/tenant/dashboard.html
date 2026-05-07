@@ -2,59 +2,194 @@
 <div class="main-content">
   <h2 class="page-title">My Dashboard</h2>
 
-  <!-- Loading state -->
   <p ng-if="!profile" class="text-muted">Loading your details...</p>
 
   <div ng-if="profile">
 
-    <!-- ── Profile + Room Info Cards ─────────────────────────── -->
-    <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+    <!-- ── Stat Cards ────────────────────────────────────────── -->
+    <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
 
       <div class="stat-card">
-        <div class="stat-number" style="font-size:28px;">{{ profile.name }}</div>
-        <div class="stat-label">Tenant Name</div>
+        <div class="stat-number" style="font-size:26px;">{{ profile.name }}</div>
+        <div class="stat-label">My Account</div>
         <div class="text-muted mt-2">{{ profile.email }}</div>
+        <div class="text-muted">{{ profile.phone }}</div>
       </div>
 
-      <div class="stat-card" ng-if="profile.roomId">
+      <div class="stat-card" ng-if="profile.roomId" style="border-top-color:#3498db;">
         <div class="stat-number">{{ profile.roomId.roomNumber }}</div>
         <div class="stat-label">My Room</div>
-        <div class="text-muted mt-2">{{ profile.roomId.type }} · ₹{{ profile.roomId.pricePerMonth }}/mo</div>
+        <div class="text-muted mt-2">{{ profile.roomId.type }}</div>
+        <div class="text-muted">₹{{ profile.roomId.pricePerMonth }} / person / month</div>
       </div>
 
       <div class="stat-card" ng-if="!profile.roomId" style="border-top-color:#e74c3c;">
         <div class="stat-number" style="font-size:28px;">—</div>
         <div class="stat-label">No Room Assigned</div>
-        <div class="text-muted mt-2">Contact admin to get a room</div>
+        <div class="text-muted mt-2">Contact admin</div>
       </div>
 
       <div class="stat-card" style="border-top-color:#f39c12;">
-        <div class="stat-number" style="font-size:24px;">{{ nextDueDate }}</div>
-        <div class="stat-label">Next Rent Due</div>
-        <div class="text-muted mt-2">Due on day {{ profile.rentDueDay }} each month</div>
+        <div class="stat-number" style="font-size:26px;">{{ daysUntilRent }}</div>
+        <div class="stat-label">Days Until Rent Due</div>
+        <div class="text-muted mt-2">{{ nextDueDate }}</div>
+      </div>
+
+      <div class="stat-card" style="border-top-color:#e74c3c;">
+        <div class="stat-number">{{ openCount }}</div>
+        <div class="stat-label">Open Complaints</div>
+        <div class="text-muted mt-2">
+          <a href="#!/tenant/maintenance" style="color:var(--accent);">View all</a>
+        </div>
       </div>
 
     </div>
 
     <!-- ── Room Amenities ────────────────────────────────────── -->
-    <div class="table-card mt-4" ng-if="profile.roomId && profile.roomId.amenities.length > 0">
-      <h4 style="margin-bottom:14px;">Room Amenities</h4>
+    <div class="table-card mt-4"
+         ng-if="profile.roomId && profile.roomId.amenities && profile.roomId.amenities.length > 0">
+      <h4 style="margin-bottom:12px;">Room Amenities — {{ profile.roomId.roomNumber }}</h4>
       <span class="chip" ng-repeat="a in profile.roomId.amenities">{{ a }}</span>
     </div>
 
-    <!-- ── Preferences (for Roommate Matcher context) ────────── -->
+    <!-- ── Bottom two columns ────────────────────────────────── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
+
+      <!-- Latest Notices -->
+      <div class="table-card">
+        <div class="table-header">
+          <h4 style="margin:0;">Latest Notices</h4>
+          <a href="#!/tenant/notices" class="btn btn-primary btn-sm">All Notices</a>
+        </div>
+        <div ng-if="notices.length === 0" class="text-muted" style="padding:12px 0;">
+          No notices from admin yet.
+        </div>
+        <div class="notice-list" ng-if="notices.length > 0">
+          <div class="notice-card" ng-repeat="n in notices" style="padding:12px 16px;">
+            <div class="notice-title">{{ n.title }}</div>
+            <div class="notice-date">{{ n.createdAt | date:'mediumDate' }}</div>
+            <div class="notice-body">{{ n.message }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Maintenance Requests -->
+      <div class="table-card">
+        <div class="table-header">
+          <h4 style="margin:0;">My Complaints</h4>
+          <a href="#!/tenant/maintenance" class="btn btn-primary btn-sm">File New</a>
+        </div>
+        <div ng-if="myRequests.length === 0" class="text-muted" style="padding:12px 0;">
+          No complaints filed yet.
+        </div>
+        <table ng-if="myRequests.length > 0">
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="req in myRequests | limitTo:5">
+              <td>{{ req.title }}</td>
+              <td>
+                <span class="badge"
+                  ng-class="{
+                    'badge-warning': req.status==='Pending',
+                    'badge-info':    req.status==='In Progress',
+                    'badge-success': req.status==='Resolved'
+                  }">{{ req.status }}</span>
+              </td>
+              <td>{{ req.createdAt | date:'mediumDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- ── Preferences ────────────────────────────────────────── -->
     <div class="table-card mt-4">
-      <h4 style="margin-bottom:14px;">Your Roommate Preferences</h4>
-      <p><strong>Preferred Room Types:</strong>
-        <span class="chip" ng-repeat="p in profile.roomPreferences">{{ p }}</span>
-        <span ng-if="!profile.roomPreferences || profile.roomPreferences.length === 0" class="text-muted">None selected</span>
-      </p>
-      <p style="margin-top:10px;"><strong>Sleep Schedule:</strong> {{ profile.preferences.sleepSchedule }}</p>
-      <p><strong>Guest Policy:</strong> {{ profile.preferences.guestPolicy }}</p>
-      <p><strong>Hobbies:</strong>
-        <span class="chip" ng-repeat="h in profile.preferences.hobbies">{{ h }}</span>
-        <span ng-if="profile.preferences.hobbies.length === 0" class="text-muted">None listed</span>
-      </p>
+      <div class="table-header">
+        <h4 style="margin:0;">Roommate Preferences</h4>
+        <button class="btn btn-primary btn-sm" ng-click="openEditPrefs()"
+                ng-if="!editingPrefs">Edit Preferences</button>
+      </div>
+
+      <div class="alert alert-success mt-2" ng-if="prefMessage && !editingPrefs">{{ prefMessage }}</div>
+
+      <!-- ── View mode ─────────────────────────────────────────── -->
+      <div ng-if="!editingPrefs" style="margin-top:14px;">
+        <p>
+          <strong>Preferred Room Types:</strong>
+          <span class="chip" ng-repeat="p in profile.roomPreferences">{{ p }}</span>
+          <span ng-if="!profile.roomPreferences || profile.roomPreferences.length === 0"
+                class="text-muted">None selected</span>
+        </p>
+        <p style="margin-top:8px;"><strong>Sleep Schedule:</strong> {{ profile.preferences.sleepSchedule }}</p>
+        <p><strong>Guest Policy:</strong> {{ profile.preferences.guestPolicy }}</p>
+        <p>
+          <strong>Hobbies:</strong>
+          <span class="chip" ng-repeat="h in profile.preferences.hobbies">{{ h }}</span>
+          <span ng-if="profile.preferences.hobbies.length === 0" class="text-muted">None listed</span>
+        </p>
+      </div>
+
+      <!-- ── Edit mode ─────────────────────────────────────────── -->
+      <div ng-if="editingPrefs" style="margin-top:16px;max-width:520px;">
+
+        <div class="form-group">
+          <label>Preferred Room Types</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <label class="pref-checkbox" ng-repeat="type in roomTypes">
+              <input type="checkbox"
+                     ng-checked="prefForm.roomPreferences.indexOf(type) !== -1"
+                     ng-click="toggleRoomPref(type)">
+              {{ type }}
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Sleep Schedule</label>
+          <select class="form-control" ng-model="prefForm.preferences.sleepSchedule">
+            <option value="Early Bird">Early Bird</option>
+            <option value="Night Owl">Night Owl</option>
+            <option value="Flexible">Flexible</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Guest Policy</label>
+          <select class="form-control" ng-model="prefForm.preferences.guestPolicy">
+            <option value="No Guests">No Guests</option>
+            <option value="Occasional">Occasional</option>
+            <option value="Frequent">Frequent</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Hobbies</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" class="form-control" ng-model="hobbyInput"
+                   ng-keydown="$event.keyCode===13 && ($event.preventDefault() || addHobby())"
+                   placeholder="e.g. Reading">
+            <button type="button" class="btn btn-primary" ng-click="addHobby()">Add</button>
+          </div>
+          <div style="margin-top:8px;">
+            <span class="chip" ng-repeat="h in prefForm.preferences.hobbies">
+              {{ h }} <span ng-click="removeHobby($index)" style="cursor:pointer;">×</span>
+            </span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:8px;">
+          <button class="btn btn-success" ng-click="savePrefs()">Save Changes</button>
+          <button class="btn btn-danger"  ng-click="cancelEditPrefs()">Cancel</button>
+        </div>
+      </div>
+
     </div>
 
   </div>

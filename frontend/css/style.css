@@ -385,6 +385,16 @@ body.dark-mode .alert-danger  { background: #2e1a1a; color: #f07070; border-colo
 }
 .btn-darkmode:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
+/* ── Dashboard section label ────────────────────────────────── */
+.dash-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
 /* ── Utility ────────────────────────────────────────────────── */
 .mt-2  { margin-top: 8px; }
 .mt-4  { margin-top: 16px; }

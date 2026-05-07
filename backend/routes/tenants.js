@@ -33,6 +33,21 @@ router.get('/me', verifyToken, async (req, res) => {
   }
 });
 
+// PUT /api/tenants/me/preferences — Tenant updates their own preferences
+router.put('/me/preferences', verifyToken, async (req, res) => {
+  try {
+    const { preferences, roomPreferences } = req.body;
+    const tenant = await Tenant.findByIdAndUpdate(
+      req.user.id,
+      { preferences, roomPreferences },
+      { new: true, runValidators: true }
+    ).select('-password');
+    res.json(tenant);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 // PUT /api/tenants/:id/assign-room — Assign a room to a tenant (Admin only)
 router.put('/:id/assign-room', verifyToken, adminOnly, async (req, res) => {
   try {
