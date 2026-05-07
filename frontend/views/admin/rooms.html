@@ -1,0 +1,109 @@
+<!-- views/admin/rooms.html — Room CRUD Management -->
+<div class="main-content">
+  <h2 class="page-title">Room Management</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+
+    <!-- ── Room List Table ──────────────────────────────────── -->
+    <div class="table-card">
+      <h4 style="margin-bottom:18px;">All Rooms</h4>
+
+      <div class="alert alert-success" ng-if="message">{{ message }}</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Room No.</th>
+            <th>Type</th>
+            <th>Price / Month</th>
+            <th>Occupancy</th>
+            <th>Amenities</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-if="rooms.length === 0">
+            <td colspan="7" style="text-align:center;color:#aaa;padding:20px;">
+              No rooms added yet.
+            </td>
+          </tr>
+          <tr ng-repeat="room in rooms">
+            <td><strong>{{ room.roomNumber }}</strong></td>
+            <td>{{ room.type }}</td>
+            <td>₹{{ room.pricePerMonth }}</td>
+            <td>{{ room.occupiedBeds }} / {{ room.capacity }}</td>
+            <td>
+              <span class="chip" ng-repeat="a in room.amenities">{{ a }}</span>
+            </td>
+            <td>
+              <span class="badge"
+                ng-class="room.status === 'Vacant' ? 'badge-success' : 'badge-danger'">
+                {{ room.status }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-warning btn-sm" ng-click="editRoom(room)">Edit</button>
+              <button class="btn btn-danger btn-sm" ng-click="deleteRoom(room._id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Add / Edit Room Form ─────────────────────────────── -->
+    <div class="form-card">
+      <h4 style="margin-bottom:18px;">
+        {{ editMode ? 'Edit Room' : 'Add New Room' }}
+      </h4>
+
+      <form ng-submit="saveRoom()">
+        <div class="form-group">
+          <label>Room Number</label>
+          <input type="text" class="form-control"
+                 ng-model="newRoom.roomNumber" placeholder="e.g. 101" required>
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select class="form-control" ng-model="newRoom.type" required>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+            <option value="Triple">Triple</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Price Per Month (₹)</label>
+          <input type="number" class="form-control"
+                 ng-model="newRoom.pricePerMonth" placeholder="e.g. 5000" required>
+        </div>
+        <div class="form-group">
+          <label>Capacity (beds)</label>
+          <input type="number" class="form-control"
+                 ng-model="newRoom.capacity" placeholder="e.g. 2" required>
+        </div>
+        <div class="form-group">
+          <label>Amenities</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" class="form-control" ng-model="amenityInput"
+                   ng-keydown="$event.keyCode===13 && addAmenity()"
+                   placeholder="e.g. AC, WiFi">
+            <button type="button" class="btn btn-primary" ng-click="addAmenity()">+</button>
+          </div>
+          <div style="margin-top:8px;">
+            <span class="chip" ng-repeat="a in newRoom.amenities">
+              {{ a }} <span ng-click="removeAmenity($index)" style="cursor:pointer;">×</span>
+            </span>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success" style="width:100%;">
+          {{ editMode ? 'Update Room' : 'Add Room' }}
+        </button>
+        <button type="button" class="btn btn-danger mt-2"
+                style="width:100%;" ng-if="editMode" ng-click="cancelEdit()">
+          Cancel
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

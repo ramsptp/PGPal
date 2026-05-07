@@ -1,0 +1,60 @@
+<!-- views/tenant/matcher.html — Roommate Compatibility Matcher -->
+<div class="main-content">
+  <h2 class="page-title">Roommate Matcher</h2>
+
+  <p class="text-muted mb-4">
+    Compatibility is calculated by comparing sleep schedules, guest policies,
+    smoking preference, and shared hobbies. Higher score = better match.
+  </p>
+
+  <!-- Loading spinner placeholder -->
+  <p ng-if="loading" class="text-muted">Calculating matches...</p>
+
+  <div ng-if="!loading">
+
+    <!-- My own preferences summary -->
+    <div class="form-card mb-4" ng-if="currentTenant">
+      <h4 style="margin-bottom:12px;">Your Preferences ({{ currentTenant.name }})</h4>
+      <span class="chip">{{ currentTenant.preferences.sleepSchedule }}</span>
+      <span class="chip">{{ currentTenant.preferences.guestPolicy }}</span>
+      <span class="chip">Smoking: {{ currentTenant.preferences.smokingAllowed ? 'Yes' : 'No' }}</span>
+      <span class="chip" ng-repeat="h in currentTenant.preferences.hobbies">{{ h }}</span>
+    </div>
+
+    <!-- No other tenants yet -->
+    <p ng-if="matches.length === 0" class="text-muted">
+      No other tenants to match with yet.
+    </p>
+
+    <!-- Match Cards Grid -->
+    <div class="matcher-grid">
+      <div class="matcher-card" ng-repeat="m in matches">
+
+        <!-- Score badge changes color based on compatibility -->
+        <div class="matcher-score">
+          <span class="badge" ng-class="scoreClass(m.score)" style="font-size:28px;padding:8px 16px;">
+            {{ m.score }}%
+          </span>
+        </div>
+
+        <div class="matcher-name">{{ m.name }}</div>
+        <div class="matcher-room">Room: {{ m.room }}</div>
+
+        <div style="margin-top:10px;font-size:12px;color:#555;">
+          <span class="chip">{{ m.preferences.sleepSchedule }}</span>
+          <span class="chip">{{ m.preferences.guestPolicy }}</span>
+          <span class="chip">Smoking: {{ m.preferences.smokingAllowed ? 'Yes' : 'No' }}</span>
+        </div>
+
+        <div class="matcher-hobbies" ng-if="m.sharedHobbies.length > 0">
+          Shared hobbies: {{ m.sharedHobbies.join(', ') }}
+        </div>
+        <div class="text-muted" style="font-size:12px;margin-top:4px;"
+             ng-if="m.sharedHobbies.length === 0">
+          No shared hobbies
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

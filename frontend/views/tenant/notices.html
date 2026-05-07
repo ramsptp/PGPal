@@ -1,0 +1,16 @@
+<!-- views/tenant/notices.html — Notice Board for Tenants -->
+<div class="main-content">
+  <h2 class="page-title">Notice Board</h2>
+
+  <div ng-if="notices.length === 0" class="text-muted">
+    No notices posted by admin yet. Check back later.
+  </div>
+
+  <div class="notice-list">
+    <div class="notice-card" ng-repeat="n in notices">
+      <div class="notice-title">{{ n.title }}</div>
+      <div class="notice-date">Posted on {{ n.createdAt | date:'medium' }}</div>
+      <div class="notice-body">{{ n.message }}</div>
+    </div>
+  </div>
+</div>

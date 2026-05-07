@@ -1,0 +1,82 @@
+<!-- views/register.html — Tenant Registration -->
+<div class="auth-wrapper">
+  <div class="auth-card" style="max-width:520px;">
+
+    <div class="auth-logo">PG<span>Pal</span></div>
+    <h2>Create Account</h2>
+
+    <div class="alert alert-danger" ng-if="errorMsg">{{ errorMsg }}</div>
+
+    <form ng-submit="register()">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" class="form-control" ng-model="registerData.name" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" class="form-control" ng-model="registerData.email" required>
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" class="form-control" ng-model="registerData.phone" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" ng-model="registerData.password" required>
+      </div>
+
+      <!-- Roommate Preferences Section -->
+      <hr>
+      <p style="font-weight:600;margin-bottom:12px;">Roommate Preferences</p>
+
+      <div class="form-group">
+        <label>Sleep Schedule</label>
+        <select class="form-control" ng-model="registerData.preferences.sleepSchedule">
+          <option value="Early Bird">Early Bird</option>
+          <option value="Night Owl">Night Owl</option>
+          <option value="Flexible">Flexible</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Guest Policy</label>
+        <select class="form-control" ng-model="registerData.preferences.guestPolicy">
+          <option value="No Guests">No Guests</option>
+          <option value="Occasional">Occasional</option>
+          <option value="Frequent">Frequent</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Smoking Allowed?</label>
+        <select class="form-control" ng-model="registerData.preferences.smokingAllowed">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Hobbies (press Enter to add)</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" class="form-control" ng-model="hobbyInput"
+                 ng-keydown="$event.keyCode===13 && addHobby()"
+                 placeholder="e.g. Gaming">
+          <button type="button" class="btn btn-primary" ng-click="addHobby()">Add</button>
+        </div>
+        <div style="margin-top:8px;">
+          <span class="chip" ng-repeat="h in registerData.preferences.hobbies">
+            {{ h }} <span ng-click="removeHobby($index)" style="cursor:pointer;">×</span>
+          </span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success" style="width:100%;">
+        Register
+      </button>
+    </form>
+
+    <p class="text-muted mt-4" style="text-align:center;">
+      Already have an account? <a href="#!/login">Login</a>
+    </p>
+  </div>
+</div>

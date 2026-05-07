@@ -1,0 +1,58 @@
+<!-- views/admin/tenants.html — Tenant Management -->
+<div class="main-content">
+  <h2 class="page-title">Tenant Management</h2>
+
+  <div class="alert alert-success" ng-if="message">{{ message }}</div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Current Room</th>
+          <th>Move-In Date</th>
+          <th>Assign Room</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="tenants.length === 0">
+          <td colspan="7" style="text-align:center;color:#aaa;padding:20px;">
+            No tenants registered yet.
+          </td>
+        </tr>
+        <tr ng-repeat="tenant in tenants">
+          <td>{{ tenant.name }}</td>
+          <td>{{ tenant.email }}</td>
+          <td>{{ tenant.phone }}</td>
+          <td>
+            <span ng-if="tenant.roomId">{{ tenant.roomId.roomNumber }} ({{ tenant.roomId.type }})</span>
+            <span ng-if="!tenant.roomId" class="badge badge-warning">Unassigned</span>
+          </td>
+          <td>{{ tenant.moveInDate | date:'mediumDate' }}</td>
+          <td style="width:240px;">
+            <!-- Inline room assignment dropdown -->
+            <div style="display:flex;gap:6px;">
+              <select class="form-control form-control-sm" ng-model="assignRoomId"
+                      style="flex:1;">
+                <option value="">Select Room</option>
+                <option ng-repeat="room in rooms | filter:{status:'Vacant'}"
+                        value="{{ room._id }}">
+                  {{ room.roomNumber }} ({{ room.type }})
+                </option>
+              </select>
+              <button class="btn btn-success btn-sm"
+                      ng-click="assignRoom(tenant._id)">Assign</button>
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm"
+                    ng-click="deleteTenant(tenant._id)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

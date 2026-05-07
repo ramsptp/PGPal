@@ -1,0 +1,72 @@
+<!-- views/tenant/maintenance.html — Submit & Track Maintenance Requests -->
+<div class="main-content">
+  <h2 class="page-title">Maintenance Requests</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+
+    <!-- ── My Previous Requests ──────────────────────────────── -->
+    <div class="table-card">
+      <h4 style="margin-bottom:16px;">My Requests</h4>
+
+      <div ng-if="myRequests.length === 0" class="text-muted">
+        You have not filed any requests yet.
+      </div>
+
+      <table ng-if="myRequests.length > 0">
+        <thead>
+          <tr>
+            <th>Issue</th>
+            <th>Status</th>
+            <th>Admin Note</th>
+            <th>Filed On</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="req in myRequests">
+            <td>
+              <strong>{{ req.title }}</strong><br>
+              <small class="text-muted">{{ req.description }}</small>
+            </td>
+            <td>
+              <span class="badge"
+                ng-class="{
+                  'badge-warning': req.status === 'Pending',
+                  'badge-info':    req.status === 'In Progress',
+                  'badge-success': req.status === 'Resolved'
+                }">{{ req.status }}</span>
+            </td>
+            <td><small>{{ req.adminNote || '—' }}</small></td>
+            <td>{{ req.createdAt | date:'mediumDate' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── New Request Form ──────────────────────────────────── -->
+    <div class="form-card">
+      <h4 style="margin-bottom:18px;">File New Request</h4>
+
+      <div class="alert alert-success" ng-if="message && message.indexOf('success') !== -1">{{ message }}</div>
+      <div class="alert alert-danger"  ng-if="message && message.indexOf('success') === -1">{{ message }}</div>
+
+      <form ng-submit="submitRequest()">
+        <div class="form-group">
+          <label>Issue Title</label>
+          <input type="text" class="form-control"
+                 ng-model="newRequest.title"
+                 placeholder="e.g. Leaking tap" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea class="form-control" ng-model="newRequest.description"
+                    rows="4"
+                    placeholder="Describe the issue in detail..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">
+          Submit Request
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

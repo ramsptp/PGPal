@@ -1,0 +1,48 @@
+<!-- views/admin/notices.html — Post & Manage Notices -->
+<div class="main-content">
+  <h2 class="page-title">Notice Board Management</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+
+    <!-- ── Existing Notices ──────────────────────────────────── -->
+    <div>
+      <div class="alert alert-success" ng-if="message">{{ message }}</div>
+
+      <div ng-if="notices.length === 0" class="text-muted">No notices posted yet.</div>
+
+      <div class="notice-list">
+        <div class="notice-card" ng-repeat="n in notices">
+          <div class="flex-between">
+            <div class="notice-title">{{ n.title }}</div>
+            <button class="btn btn-danger btn-sm"
+                    ng-click="deleteNotice(n._id)">Delete</button>
+          </div>
+          <div class="notice-date">{{ n.createdAt | date:'medium' }}</div>
+          <div class="notice-body">{{ n.message }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Post New Notice ───────────────────────────────────── -->
+    <div class="form-card">
+      <h4 style="margin-bottom:18px;">Post New Notice</h4>
+      <form ng-submit="postNotice()">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" class="form-control"
+                 ng-model="newNotice.title"
+                 placeholder="e.g. Water supply interruption" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea class="form-control" ng-model="newNotice.message"
+                    rows="5" placeholder="Write your notice here..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">
+          Post Notice
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

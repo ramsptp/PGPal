@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pgpalApp">
+<!--
+  index.html — PGPal Single Page Application Shell
+  AngularJS 1.x renders all views inside <ng-view>.
+  The ng-app directive on <html> bootstraps the entire app.
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PGPal — Paying Guest Management</title>
+
+  <!-- Bootstrap 4 for grid and utility classes -->
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <!-- Our custom styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body ng-controller="AppCtrl">
+
+  <!-- ── Navbar: shown only when user is logged in ─────────── -->
+  <nav class="navbar" ng-if="isLoggedIn()">
+    <div class="navbar-brand">PG<span>Pal</span></div>
+
+    <div class="navbar-links">
+      <!-- Admin links -->
+      <span ng-if="isAdmin()">
+        <a href="#!/admin/dashboard">Dashboard</a>
+        <a href="#!/admin/rooms">Rooms</a>
+        <a href="#!/admin/tenants">Tenants</a>
+        <a href="#!/admin/maintenance">Maintenance</a>
+        <a href="#!/admin/notices">Notices</a>
+      </span>
+      <!-- Tenant links -->
+      <span ng-if="!isAdmin()">
+        <a href="#!/tenant/dashboard">My Room</a>
+        <a href="#!/tenant/maintenance">Maintenance</a>
+        <a href="#!/tenant/notices">Notice Board</a>
+        <a href="#!/tenant/matcher">Roommate Matcher</a>
+      </span>
+      <button class="btn-logout" ng-click="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- ── Main View: AngularJS injects the matching template here ── -->
+  <div ng-view></div>
+
+  <!-- ── Scripts ─────────────────────────────────────────────── -->
+  <!-- AngularJS 1.8.x core library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <!-- ngRoute module for $routeProvider client-side routing -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+
+  <!-- Application files (order matters: app.js before controllers.js) -->
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
+
+</body>
+</html>
