@@ -427,6 +427,46 @@ body.dark-mode .alert-danger  { background: #2e1a1a; color: #f07070; border-colo
 }
 .btn-darkmode:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
+/* ── Flash bar ──────────────────────────────────────────────── */
+.flash-bar {
+  position: fixed;
+  top: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 9999;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  animation: flashFade 3.2s ease forwards;
+  pointer-events: none;
+}
+.flash-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.flash-danger  { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+@keyframes flashFade {
+  0%,65% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100%   { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+}
+
+/* ── Print styles ───────────────────────────────────────────── */
+@media print {
+  .navbar, .btn, .assign-select, .pg-select,
+  .table-header .btn, form, .flash-bar,
+  th:last-child, td:last-child,
+  th:nth-last-child(2), td:nth-last-child(2) { display: none !important; }
+  body    { background: #fff !important; color: #000 !important; font-size: 12px; }
+  .main-content { padding: 0 !important; max-width: 100% !important; }
+  .table-card   { box-shadow: none !important; padding: 0 !important; }
+  .page-title   { color: #000 !important; font-size: 18px; margin-bottom: 12px; }
+  table         { width: 100%; border-collapse: collapse; }
+  th, td        { border: 1px solid #999 !important; padding: 6px 8px !important; }
+  thead th      { background: #eee !important; color: #000 !important; }
+  .badge        { border: 1px solid #999; padding: 2px 6px; border-radius: 0; }
+  .print-header { display: block !important; text-align: center; margin-bottom: 16px; }
+}
+.print-header { display: none; }
+
 /* ── Dashboard section label ────────────────────────────────── */
 .dash-section-label {
   font-size: 11px;

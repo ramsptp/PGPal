@@ -108,21 +108,40 @@ app.factory('AuthService', function($window) {
   };
 });
 
-// ── HTTP Interceptor — Attaches JWT to every API request ─────
-app.factory('AuthInterceptor', function(AuthService) {
+// ── HTTP Interceptor — Attaches JWT + handles session expiry ──
+app.factory('AuthInterceptor', function(AuthService, $q, $injector) {
   return {
     request: function(config) {
       var token = AuthService.getToken();
-      if (token) {
-        config.headers['Authorization'] = 'Bearer ' + token;
-      }
+      if (token) config.headers['Authorization'] = 'Bearer ' + token;
       return config;
+    },
+    responseError: function(rejection) {
+      // 401 = token expired or missing — boot to login
+      if (rejection.status === 401) {
+        AuthService.logout();
+        $injector.get('$location').path('/login');
+      }
+      return $q.reject(rejection);
     }
   };
 });
 
 app.config(function($httpProvider) {
   $httpProvider.interceptors.push('AuthInterceptor');
+});
+
+// ── Flash service — auto-clearing messages ────────────────────
+app.factory('Flash', function($rootScope, $timeout) {
+  var timer = null;
+  return {
+    set: function(msg, type) {
+      if (timer) $timeout.cancel(timer);
+      $rootScope.flash = { msg: msg, type: type || 'success' };
+      timer = $timeout(function() { $rootScope.flash = null; }, 3000);
+    },
+    clear: function() { $rootScope.flash = null; }
+  };
 });
 
 // ── Root Controller — Handles navbar and global state ────────

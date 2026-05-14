@@ -128,8 +128,9 @@ router.put('/:id/assign-room', verifyToken, adminOnly, async (req, res) => {
       }
     }
 
-    // Assign new room
-    tenant.roomId = roomId;
+    // Assign new room and record the move-in date as today
+    tenant.roomId     = roomId;
+    tenant.moveInDate = new Date();
     await tenant.save();
 
     room.occupiedBeds += 1;

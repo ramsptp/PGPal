@@ -20,7 +20,7 @@ function verifyToken(req, res, next) {
     req.user = decoded;  // Attach decoded payload { id, role } to the request
     next();
   } catch (err) {
-    return res.status(403).json({ message: 'Invalid or expired token' });
+    return res.status(401).json({ message: 'Session expired. Please log in again.' });
   }
 }
 

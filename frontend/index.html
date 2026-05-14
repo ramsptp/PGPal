@@ -49,6 +49,9 @@
     </div>
   </nav>
 
+  <!-- ── Global flash bar ─────────────────────────────────────── -->
+  <div class="flash-bar flash-{{ flash.type }}" ng-if="flash">{{ flash.msg }}</div>
+
   <!-- ── Main View: AngularJS injects the matching template here ── -->
   <div ng-view></div>
 

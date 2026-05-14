@@ -5,7 +5,7 @@
 var app = angular.module('pgpalApp');
 
 // ── Auth Controller ──────────────────────────────────────────
-app.controller('AuthCtrl', function($scope, $http, $location, AuthService) {
+app.controller('AuthCtrl', function($scope, $http, $location, AuthService, Flash) {
 
   $scope.loginData    = {};
   $scope.registerData = { preferences: { hobbies: [] }, roomPreferences: [] };
@@ -111,19 +111,24 @@ app.controller('AdminDashCtrl', function($scope, $http) {
     $scope.recentMaintenance = all.slice(0, 5);
   });
 
-  // Pending rent receipts
+  // Rent receipts — pending count + confirmed total this month
   $http.get('/api/rent').then(function(res) {
+    var now   = new Date();
+    var month = now.getMonth() + 1;
+    var year  = now.getFullYear();
     $scope.pendingRent = res.data.filter(function(r) { return r.status === 'Pending'; }).length;
+    $scope.confirmedRentThisMonth = res.data
+      .filter(function(r) { return r.status === 'Confirmed' && r.month === month && r.year === year; })
+      .reduce(function(sum, r) { return sum + r.amount; }, 0);
   });
 });
 
 // ── Room Controller (Admin) ──────────────────────────────────
-app.controller('RoomCtrl', function($scope, $http) {
+app.controller('RoomCtrl', function($scope, $http, Flash) {
   $scope.rooms        = [];
   $scope.newRoom      = { amenities: [] };
   $scope.amenityInput = '';
   $scope.editMode     = false;
-  $scope.message      = '';
   $scope.roomSearch   = '';
   $scope.occupants    = [];
   $scope.selectedRoom = null;
@@ -157,12 +162,12 @@ app.controller('RoomCtrl', function($scope, $http) {
       : $http.post('/api/rooms', $scope.newRoom);
 
     request.then(function() {
-      $scope.message  = $scope.editMode ? 'Room updated!' : 'Room added!';
+      Flash.set($scope.editMode ? 'Room updated!' : 'Room added!');
       $scope.newRoom  = { amenities: [] };
       $scope.editMode = false;
       loadRooms();
     }).catch(function(err) {
-      $scope.message = err.data ? err.data.message : 'Error saving room';
+      Flash.set(err.data ? err.data.message : 'Error saving room', 'danger');
     });
   };
 
@@ -177,22 +182,21 @@ app.controller('RoomCtrl', function($scope, $http) {
     $scope.editMode = false;
   };
 
-  // DELETE /api/rooms/:id
   $scope.deleteRoom = function(id) {
     if (!confirm('Delete this room?')) return;
     $http.delete('/api/rooms/' + id)
-      .then(function() { loadRooms(); });
+      .then(function() { Flash.set('Room deleted.'); loadRooms(); });
   };
 });
 
 // ── Tenant Admin Controller ──────────────────────────────────
-app.controller('TenantAdminCtrl', function($scope, $http) {
-  $scope.tenants      = [];
-  $scope.rooms        = [];
-  $scope.message      = '';
-  $scope.tenantSearch = '';
+app.controller('TenantAdminCtrl', function($scope, $http, Flash) {
+  $scope.tenants       = [];
+  $scope.rooms         = [];
+  $scope.tenantSearch  = '';
   $scope.editingTenant = null;
-  $scope.editForm     = {};
+  $scope.editForm      = {};
+  $scope.today         = new Date();
 
   // Returns the next actual due date for a given day-of-month
   $scope.nextDueDate = function(day) {
@@ -210,21 +214,17 @@ app.controller('TenantAdminCtrl', function($scope, $http) {
 
   // PUT /api/tenants/:id/assign-room — roomId passed directly from the row's ng-model
   $scope.assignRoom = function(tenantId, roomId) {
-    if (!roomId) { $scope.message = 'Please select a room first.'; return; }
+    if (!roomId) { Flash.set('Please select a room first.', 'danger'); return; }
     $http.put('/api/tenants/' + tenantId + '/assign-room', { roomId: roomId })
-      .then(function() {
-        $scope.message = 'Room assigned successfully!';
-        loadAll();
-      }).catch(function(err) {
-        $scope.message = err.data ? err.data.message : 'Assignment failed';
-      });
+      .then(function() { Flash.set('Room assigned successfully!'); loadAll(); })
+      .catch(function(err) { Flash.set(err.data ? err.data.message : 'Assignment failed', 'danger'); });
   };
 
   $scope.vacateTenant = function(id) {
     if (!confirm('Move this tenant out of their room?')) return;
     $http.put('/api/tenants/' + id + '/vacate', {})
-      .then(function() { $scope.message = 'Tenant vacated.'; loadAll(); })
-      .catch(function(err) { $scope.message = err.data ? err.data.message : 'Failed'; });
+      .then(function() { Flash.set('Tenant vacated.'); loadAll(); })
+      .catch(function(err) { Flash.set(err.data ? err.data.message : 'Failed', 'danger'); });
   };
 
   $scope.openEditTenant = function(tenant) {
@@ -244,8 +244,8 @@ app.controller('TenantAdminCtrl', function($scope, $http) {
           $scope.tenants[idx].rentDueDay = res.data.rentDueDay;
         }
         $scope.editingTenant = null;
-        $scope.message = 'Tenant updated!';
-      }).catch(function(err) { $scope.message = err.data ? err.data.message : 'Update failed'; });
+        Flash.set('Tenant updated!');
+      }).catch(function(err) { Flash.set(err.data ? err.data.message : 'Update failed', 'danger'); });
   };
 
   $scope.deleteTenant = function(id) {

@@ -2,13 +2,18 @@
 <div class="main-content">
   <h2 class="page-title">Tenant Management</h2>
 
-  <div class="alert alert-success" ng-if="message">{{ message }}</div>
-
   <div class="table-card">
+    <div class="print-header">
+      <h2>PGPal — Tenant Report</h2>
+      <p>Printed on {{ today | date:'d MMM yyyy' }}</p>
+    </div>
     <div class="table-header" style="margin-bottom:14px;">
       <h4 style="margin:0;">All Tenants</h4>
-      <input type="text" class="form-control" style="width:220px;"
-             ng-model="tenantSearch" placeholder="Search name / email...">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" class="form-control" style="width:220px;"
+               ng-model="tenantSearch" placeholder="Search name / email...">
+        <button class="btn btn-primary btn-sm" onclick="window.print()">🖨 Print</button>
+      </div>
     </div>
 
     <table>
