@@ -110,22 +110,37 @@ app.controller('AdminDashCtrl', function($scope, $http) {
     $scope.pendingCount      = all.filter(function(r) { return r.status === 'Pending'; }).length;
     $scope.recentMaintenance = all.slice(0, 5);
   });
+
+  // Pending rent receipts
+  $http.get('/api/rent').then(function(res) {
+    $scope.pendingRent = res.data.filter(function(r) { return r.status === 'Pending'; }).length;
+  });
 });
 
 // ── Room Controller (Admin) ──────────────────────────────────
 app.controller('RoomCtrl', function($scope, $http) {
-  $scope.rooms      = [];
-  $scope.newRoom    = { amenities: [] };
+  $scope.rooms        = [];
+  $scope.newRoom      = { amenities: [] };
   $scope.amenityInput = '';
-  $scope.editMode   = false;
-  $scope.message    = '';
+  $scope.editMode     = false;
+  $scope.message      = '';
+  $scope.roomSearch   = '';
+  $scope.occupants    = [];
+  $scope.selectedRoom = null;
 
-  // Fetch all rooms from the API
   function loadRooms() {
-    $http.get('/api/rooms')
-      .then(function(res) { $scope.rooms = res.data; });
+    $http.get('/api/rooms').then(function(res) { $scope.rooms = res.data; });
   }
   loadRooms();
+
+  $scope.viewOccupants = function(room) {
+    $scope.selectedRoom = room;
+    $scope.occupants    = [];
+    $http.get('/api/rooms/' + room._id + '/occupants')
+      .then(function(res) { $scope.occupants = res.data; });
+  };
+
+  $scope.closeOccupants = function() { $scope.selectedRoom = null; };
 
   $scope.addAmenity = function() {
     var a = $scope.amenityInput.trim();
@@ -172,9 +187,20 @@ app.controller('RoomCtrl', function($scope, $http) {
 
 // ── Tenant Admin Controller ──────────────────────────────────
 app.controller('TenantAdminCtrl', function($scope, $http) {
-  $scope.tenants = [];
-  $scope.rooms   = [];
-  $scope.message = '';
+  $scope.tenants      = [];
+  $scope.rooms        = [];
+  $scope.message      = '';
+  $scope.tenantSearch = '';
+  $scope.editingTenant = null;
+  $scope.editForm     = {};
+
+  // Returns the next actual due date for a given day-of-month
+  $scope.nextDueDate = function(day) {
+    var today = new Date();
+    var due   = new Date(today.getFullYear(), today.getMonth(), day);
+    if (due <= today) due.setMonth(due.getMonth() + 1);
+    return due;
+  };
 
   function loadAll() {
     $http.get('/api/tenants').then(function(res) { $scope.tenants = res.data; });
@@ -194,8 +220,36 @@ app.controller('TenantAdminCtrl', function($scope, $http) {
       });
   };
 
+  $scope.vacateTenant = function(id) {
+    if (!confirm('Move this tenant out of their room?')) return;
+    $http.put('/api/tenants/' + id + '/vacate', {})
+      .then(function() { $scope.message = 'Tenant vacated.'; loadAll(); })
+      .catch(function(err) { $scope.message = err.data ? err.data.message : 'Failed'; });
+  };
+
+  $scope.openEditTenant = function(tenant) {
+    $scope.editingTenant = tenant._id;
+    $scope.editForm = { name: tenant.name, phone: tenant.phone, rentDueDay: tenant.rentDueDay };
+  };
+
+  $scope.cancelEditTenant = function() { $scope.editingTenant = null; };
+
+  $scope.saveEditTenant = function(id) {
+    $http.put('/api/tenants/' + id + '/edit', $scope.editForm)
+      .then(function(res) {
+        var idx = $scope.tenants.findIndex(function(t) { return t._id === id; });
+        if (idx !== -1) {
+          $scope.tenants[idx].name       = res.data.name;
+          $scope.tenants[idx].phone      = res.data.phone;
+          $scope.tenants[idx].rentDueDay = res.data.rentDueDay;
+        }
+        $scope.editingTenant = null;
+        $scope.message = 'Tenant updated!';
+      }).catch(function(err) { $scope.message = err.data ? err.data.message : 'Update failed'; });
+  };
+
   $scope.deleteTenant = function(id) {
-    if (!confirm('Remove this tenant?')) return;
+    if (!confirm('Permanently remove this tenant?')) return;
     $http.delete('/api/tenants/' + id).then(function() { loadAll(); });
   };
 });
@@ -266,6 +320,9 @@ app.controller('TenantDashCtrl', function($scope, $http) {
   $scope.prefMessage    = '';
   $scope.roomTypes      = ['Single', 'Double', 'Triple', 'Quad', '5-Sharing'];
   $scope.hobbyInput     = '';
+  $scope.editingProfile = false;
+  $scope.profileForm    = {};
+  $scope.profileMessage = '';
 
   $http.get('/api/tenants/me').then(function(res) {
     $scope.profile = res.data;
@@ -285,6 +342,10 @@ app.controller('TenantDashCtrl', function($scope, $http) {
   $http.get('/api/maintenance').then(function(res) {
     $scope.myRequests = res.data;
     $scope.openCount  = res.data.filter(function(r) { return r.status !== 'Resolved'; }).length;
+  });
+
+  $http.get('/api/rent').then(function(res) {
+    $scope.lastReceipt = res.data.length ? res.data[0] : null;
   });
 
   // Open the edit form pre-filled with current preferences
@@ -330,6 +391,28 @@ app.controller('TenantDashCtrl', function($scope, $http) {
         $scope.prefMessage = err.data ? err.data.message : 'Save failed';
       });
   };
+
+  // Profile edit
+  $scope.openEditProfile = function() {
+    $scope.profileForm    = { name: $scope.profile.name, phone: $scope.profile.phone };
+    $scope.editingProfile = true;
+    $scope.profileMessage = '';
+  };
+
+  $scope.cancelEditProfile = function() { $scope.editingProfile = false; };
+
+  $scope.saveProfile = function() {
+    $http.put('/api/tenants/me/profile', $scope.profileForm)
+      .then(function(res) {
+        $scope.profile.name   = res.data.name;
+        $scope.profile.phone  = res.data.phone;
+        $scope.editingProfile = false;
+        $scope.profileMessage = 'Profile updated!';
+      })
+      .catch(function(err) {
+        $scope.profileMessage = err.data ? err.data.message : 'Update failed';
+      });
+  };
 });
 
 // ── Tenant Maintenance Controller ────────────────────────────
@@ -367,6 +450,66 @@ app.controller('MaintenanceTenantCtrl', function($scope, $http) {
 app.controller('NoticeCtrl', function($scope, $http) {
   $scope.notices = [];
   $http.get('/api/notices').then(function(res) { $scope.notices = res.data; });
+});
+
+// ── Rent Admin Controller ─────────────────────────────────────
+app.controller('RentAdminCtrl', function($scope, $http) {
+  $scope.receipts  = [];
+  $scope.selected  = null;
+  $scope.adminNote = '';
+  $scope.newStatus = '';
+
+  function load() {
+    $http.get('/api/rent').then(function(res) { $scope.receipts = res.data; });
+  }
+  load();
+
+  $scope.open = function(r) {
+    $scope.selected  = r;
+    $scope.newStatus = r.status;
+    $scope.adminNote = r.adminNote || '';
+  };
+
+  $scope.updateReceipt = function() {
+    $http.put('/api/rent/' + $scope.selected._id, {
+      status: $scope.newStatus, adminNote: $scope.adminNote
+    }).then(function(res) {
+      var idx = $scope.receipts.findIndex(function(r) { return r._id === res.data._id; });
+      if (idx !== -1) $scope.receipts[idx] = res.data;
+      $scope.selected = null;
+    });
+  };
+
+  $scope.statusClass = function(s) {
+    return s === 'Confirmed' ? 'badge-success' : s === 'Rejected' ? 'badge-danger' : 'badge-warning';
+  };
+});
+
+// ── Rent Tenant Controller ────────────────────────────────────
+app.controller('RentTenantCtrl', function($scope, $http) {
+  $scope.receipts   = [];
+  $scope.newReceipt = { month: new Date().getMonth() + 1, year: new Date().getFullYear() };
+  $scope.message    = '';
+  $scope.profile    = null;
+  $scope.months     = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  $http.get('/api/tenants/me').then(function(res) { $scope.profile = res.data; });
+  $http.get('/api/rent').then(function(res) { $scope.receipts = res.data; });
+
+  $scope.submit = function() {
+    $http.post('/api/rent', $scope.newReceipt)
+      .then(function() {
+        $scope.message    = 'Receipt submitted! Waiting for admin confirmation.';
+        $scope.newReceipt = { month: new Date().getMonth() + 1, year: new Date().getFullYear() };
+        $http.get('/api/rent').then(function(res) { $scope.receipts = res.data; });
+      }).catch(function(err) {
+        $scope.message = err.data ? err.data.message : 'Submission failed';
+      });
+  };
+
+  $scope.statusClass = function(s) {
+    return s === 'Confirmed' ? 'badge-success' : s === 'Rejected' ? 'badge-danger' : 'badge-warning';
+  };
 });
 
 // ── Roommate Matcher Controller ──────────────────────────────

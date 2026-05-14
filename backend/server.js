@@ -37,6 +37,7 @@ app.use('/api/tenants',      require('./routes/tenants'));
 app.use('/api/maintenance',  require('./routes/maintenance'));
 app.use('/api/notices',      require('./routes/notices'));
 app.use('/api/matcher',      require('./routes/matcher'));
+app.use('/api/rent',         require('./routes/rent'));
 
 // ── Default route: serve the AngularJS SPA ──────────────────
 app.get('*', (req, res) => {

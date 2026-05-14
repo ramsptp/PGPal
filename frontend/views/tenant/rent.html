@@ -1,0 +1,74 @@
+<!-- views/tenant/rent.html — Submit and track rent receipts -->
+<div class="main-content">
+  <h2 class="page-title">Rent Payments</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+
+    <!-- History -->
+    <div class="table-card">
+      <h4 style="margin-bottom:16px;">Payment History</h4>
+      <div ng-if="receipts.length === 0" class="text-muted">No receipts submitted yet.</div>
+      <table ng-if="receipts.length > 0">
+        <thead>
+          <tr>
+            <th>Period</th>
+            <th>Amount</th>
+            <th>Reference</th>
+            <th>Status</th>
+            <th>Admin Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="r in receipts">
+            <td>{{ months[r.month-1] }} {{ r.year }}</td>
+            <td>₹{{ r.amount }}</td>
+            <td><small>{{ r.referenceNote }}</small></td>
+            <td>
+              <span class="badge" ng-class="statusClass(r.status)">{{ r.status }}</span>
+            </td>
+            <td><small>{{ r.adminNote || '—' }}</small></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Submit form -->
+    <div class="form-card">
+      <h4 style="margin-bottom:18px;">Submit Payment Receipt</h4>
+
+      <div class="alert alert-success" ng-if="message && message.indexOf('failed') === -1 && message.indexOf('Failed') === -1 && message.indexOf('must') === -1 && message.indexOf('already') === -1">{{ message }}</div>
+      <div class="alert alert-danger"  ng-if="message && (message.indexOf('failed') !== -1 || message.indexOf('Failed') !== -1 || message.indexOf('must') !== -1 || message.indexOf('already') !== -1)">{{ message }}</div>
+
+      <div ng-if="!profile || !profile.roomId" class="alert alert-danger">
+        You must be assigned to a room before submitting a receipt.
+      </div>
+
+      <form ng-submit="submit()" ng-if="profile && profile.roomId">
+        <div class="form-group">
+          <label>Month</label>
+          <select class="pg-select" ng-model="newReceipt.month">
+            <option ng-repeat="m in months" value="{{ $index + 1 }}">{{ m }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Year</label>
+          <input type="number" class="form-control" ng-model="newReceipt.year" required>
+        </div>
+        <div class="form-group">
+          <label>Amount Paid (₹)</label>
+          <input type="number" class="form-control" ng-model="newReceipt.amount"
+                 placeholder="e.g. 2000" required>
+        </div>
+        <div class="form-group">
+          <label>Reference / Transaction ID</label>
+          <input type="text" class="form-control" ng-model="newReceipt.referenceNote"
+                 placeholder="e.g. UPI Ref: 4821039481" required>
+        </div>
+        <button type="submit" class="btn btn-success" style="width:100%;">
+          Submit Receipt
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

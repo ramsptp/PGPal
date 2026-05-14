@@ -5,12 +5,19 @@
   <div class="alert alert-success" ng-if="message">{{ message }}</div>
 
   <div class="table-card">
+    <div class="table-header" style="margin-bottom:14px;">
+      <h4 style="margin:0;">All Tenants</h4>
+      <input type="text" class="form-control" style="width:220px;"
+             ng-model="tenantSearch" placeholder="Search name / email...">
+    </div>
+
     <table>
       <thead>
         <tr>
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>Next Rent Due</th>
           <th>Current Room</th>
           <th>Room Preferences</th>
           <th>Move-In Date</th>
@@ -19,15 +26,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-if="tenants.length === 0">
-          <td colspan="8" style="text-align:center;color:#aaa;padding:20px;">
-            No tenants registered yet.
+        <tr ng-if="(tenants | filter:tenantSearch).length === 0">
+          <td colspan="9" style="text-align:center;color:#aaa;padding:20px;">
+            No tenants found.
           </td>
         </tr>
-        <tr ng-repeat="tenant in tenants">
+
+        <!-- Normal row -->
+        <tr ng-repeat="tenant in tenants | filter:tenantSearch"
+            ng-if="editingTenant !== tenant._id">
           <td>{{ tenant.name }}</td>
           <td>{{ tenant.email }}</td>
           <td>{{ tenant.phone }}</td>
+          <td>{{ nextDueDate(tenant.rentDueDay) | date:'d MMM yyyy' }}</td>
           <td>
             <span ng-if="tenant.roomId">{{ tenant.roomId.roomNumber }} ({{ tenant.roomId.type }})</span>
             <span ng-if="!tenant.roomId" class="badge badge-warning">Unassigned</span>
@@ -50,11 +61,44 @@
                     style="vertical-align:middle;margin-left:4px;"
                     ng-click="assignRoom(tenant._id, tenant.selectedRoom)">Assign</button>
           </td>
-          <td>
+          <td style="white-space:nowrap;">
+            <button class="btn btn-primary btn-sm"
+                    ng-click="openEditTenant(tenant)">Edit</button>
+            <button class="btn btn-warning btn-sm" ng-if="tenant.roomId"
+                    ng-click="vacateTenant(tenant._id)">Vacate</button>
             <button class="btn btn-danger btn-sm"
                     ng-click="deleteTenant(tenant._id)">Remove</button>
           </td>
         </tr>
+
+        <!-- Inline edit row -->
+        <tr ng-repeat="tenant in tenants | filter:tenantSearch"
+            ng-if="editingTenant === tenant._id"
+            style="background:rgba(52,152,219,0.08);">
+          <td>
+            <input type="text" class="form-control form-control-sm"
+                   ng-model="editForm.name" style="min-width:120px;">
+          </td>
+          <td>{{ tenant.email }}</td>
+          <td>
+            <input type="text" class="form-control form-control-sm"
+                   ng-model="editForm.phone" style="min-width:110px;">
+          </td>
+          <td>
+            <input type="number" class="form-control form-control-sm"
+                   ng-model="editForm.rentDueDay" min="1" max="28" style="width:70px;">
+          </td>
+          <td colspan="4" class="text-muted" style="font-size:12px;">
+            — editing —
+          </td>
+          <td style="white-space:nowrap;">
+            <button class="btn btn-success btn-sm"
+                    ng-click="saveEditTenant(tenant._id)">Save</button>
+            <button class="btn btn-danger btn-sm"
+                    ng-click="cancelEditTenant()">Cancel</button>
+          </td>
+        </tr>
+
       </tbody>
     </table>
   </div>

@@ -3,6 +3,7 @@
 // ============================================================
 
 const express  = require('express');
+const bcrypt   = require('bcryptjs');
 const Tenant   = require('../models/Tenant');
 const Room     = require('../models/Room');
 const { verifyToken, adminOnly } = require('../middleware/auth');
@@ -33,6 +34,46 @@ router.get('/me', verifyToken, async (req, res) => {
   }
 });
 
+// PUT /api/tenants/:id/edit — Admin edits tenant details
+router.put('/:id/edit', verifyToken, adminOnly, async (req, res) => {
+  try {
+    const { name, phone, rentDueDay } = req.body;
+    const tenant = await Tenant.findByIdAndUpdate(
+      req.params.id,
+      { name, phone, rentDueDay },
+      { new: true, runValidators: true }
+    ).select('-password').populate('roomId', 'roomNumber type');
+    if (!tenant) return res.status(404).json({ message: 'Tenant not found' });
+    res.json(tenant);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// PUT /api/tenants/me/profile — Tenant updates name, phone, and optionally password
+router.put('/me/profile', verifyToken, async (req, res) => {
+  try {
+    const { name, phone, currentPassword, newPassword } = req.body;
+    const tenant = await Tenant.findById(req.user.id);
+
+    tenant.name  = name  || tenant.name;
+    tenant.phone = phone || tenant.phone;
+
+    if (newPassword) {
+      const match = await bcrypt.compare(currentPassword, tenant.password);
+      if (!match) return res.status(400).json({ message: 'Current password is incorrect.' });
+      tenant.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    await tenant.save();
+    const result = tenant.toObject();
+    delete result.password;
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 // PUT /api/tenants/me/preferences — Tenant updates their own preferences
 router.put('/me/preferences', verifyToken, async (req, res) => {
   try {
@@ -48,6 +89,26 @@ router.put('/me/preferences', verifyToken, async (req, res) => {
   }
 });
 
+// PUT /api/tenants/:id/vacate — Remove tenant from their room (Admin only)
+router.put('/:id/vacate', verifyToken, adminOnly, async (req, res) => {
+  try {
+    const tenant = await Tenant.findById(req.params.id);
+    if (!tenant) return res.status(404).json({ message: 'Tenant not found' });
+    if (!tenant.roomId) return res.status(400).json({ message: 'Tenant has no room.' });
+
+    const oldRoom = await Room.findById(tenant.roomId);
+    if (oldRoom) {
+      oldRoom.occupiedBeds = Math.max(0, oldRoom.occupiedBeds - 1);
+      await oldRoom.save(); // triggers pre-save hook to recalculate status
+    }
+    tenant.roomId = null;
+    await tenant.save();
+    res.json({ message: 'Tenant vacated successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // PUT /api/tenants/:id/assign-room — Assign a room to a tenant (Admin only)
 router.put('/:id/assign-room', verifyToken, adminOnly, async (req, res) => {
   try {
@@ -58,9 +119,13 @@ router.put('/:id/assign-room', verifyToken, adminOnly, async (req, res) => {
     const room = await Room.findById(roomId);
     if (!room) return res.status(404).json({ message: 'Room not found' });
 
-    // Free the old room if tenant had one
+    // Free the old room — use .save() so the pre-save hook recalculates status
     if (tenant.roomId) {
-      await Room.findByIdAndUpdate(tenant.roomId, { $inc: { occupiedBeds: -1 } });
+      const oldRoom = await Room.findById(tenant.roomId);
+      if (oldRoom) {
+        oldRoom.occupiedBeds = Math.max(0, oldRoom.occupiedBeds - 1);
+        await oldRoom.save();
+      }
     }
 
     // Assign new room
@@ -68,7 +133,7 @@ router.put('/:id/assign-room', verifyToken, adminOnly, async (req, res) => {
     await tenant.save();
 
     room.occupiedBeds += 1;
-    await room.save();  // pre-save hook will recalculate status
+    await room.save();
 
     res.json({ message: 'Room assigned successfully', tenant });
   } catch (err) {
@@ -84,7 +149,11 @@ router.delete('/:id', verifyToken, adminOnly, async (req, res) => {
 
     // Free the room bed when tenant is removed
     if (tenant.roomId) {
-      await Room.findByIdAndUpdate(tenant.roomId, { $inc: { occupiedBeds: -1 } });
+      const oldRoom = await Room.findById(tenant.roomId);
+      if (oldRoom) {
+        oldRoom.occupiedBeds = Math.max(0, oldRoom.occupiedBeds - 1);
+        await oldRoom.save();
+      }
     }
     res.json({ message: 'Tenant removed successfully' });
   } catch (err) {

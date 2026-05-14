@@ -17,6 +17,18 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
+// GET /api/rooms/:id/occupants — Tenants currently in this room
+router.get('/:id/occupants', verifyToken, adminOnly, async (req, res) => {
+  try {
+    const Tenant = require('../models/Tenant');
+    const tenants = await Tenant.find({ roomId: req.params.id, role: 'tenant' })
+      .select('name email phone moveInDate');
+    res.json(tenants);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // GET /api/rooms/stats — Dashboard summary counts
 router.get('/stats', verifyToken, async (req, res) => {
   try {

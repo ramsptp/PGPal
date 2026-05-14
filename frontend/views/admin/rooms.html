@@ -2,60 +2,89 @@
 <div class="main-content">
   <h2 class="page-title">Room Management</h2>
 
-  <div style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
 
-    <!-- ── Room List Table ──────────────────────────────────── -->
-    <div class="table-card">
-      <h4 style="margin-bottom:18px;">All Rooms</h4>
+    <!-- ── Room List ──────────────────────────────────────────── -->
+    <div>
+      <div class="table-card">
+        <div class="table-header" style="margin-bottom:14px;">
+          <h4 style="margin:0;">All Rooms</h4>
+          <input type="text" class="form-control" style="width:200px;"
+                 ng-model="roomSearch" placeholder="Search room / type...">
+        </div>
 
-      <div class="alert alert-success" ng-if="message">{{ message }}</div>
+        <div class="alert alert-success" ng-if="message">{{ message }}</div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Room No.</th>
-            <th>Type</th>
-            <th>Price / Month</th>
-            <th>Occupancy</th>
-            <th>Amenities</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-if="rooms.length === 0">
-            <td colspan="7" style="text-align:center;color:#aaa;padding:20px;">
-              No rooms added yet.
-            </td>
-          </tr>
-          <tr ng-repeat="room in rooms">
-            <td><strong>{{ room.roomNumber }}</strong></td>
-            <td>{{ room.type }}</td>
-            <td>₹{{ room.pricePerMonth }}</td>
-            <td>{{ room.occupiedBeds }} / {{ room.capacity }}</td>
-            <td>
-              <span class="chip" ng-repeat="a in room.amenities">{{ a }}</span>
-            </td>
-            <td>
-              <span class="badge"
-                ng-class="room.status === 'Vacant' ? 'badge-success' : 'badge-danger'">
-                {{ room.status }}
-              </span>
-            </td>
-            <td>
-              <button class="btn btn-warning btn-sm" ng-click="editRoom(room)">Edit</button>
-              <button class="btn btn-danger btn-sm" ng-click="deleteRoom(room._id)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <table>
+          <thead>
+            <tr>
+              <th>Room No.</th>
+              <th>Type</th>
+              <th>Price / Person</th>
+              <th>Occupancy</th>
+              <th>Amenities</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="(rooms | filter:roomSearch).length === 0">
+              <td colspan="7" style="text-align:center;color:#aaa;padding:20px;">
+                No rooms found.
+              </td>
+            </tr>
+            <tr ng-repeat="room in rooms | filter:roomSearch">
+              <td><strong>{{ room.roomNumber }}</strong></td>
+              <td>{{ room.type }}</td>
+              <td>₹{{ room.pricePerMonth }}</td>
+              <td>
+                <span>{{ room.occupiedBeds }} / {{ room.capacity }}</span>
+              </td>
+              <td>
+                <span class="chip" ng-repeat="a in room.amenities">{{ a }}</span>
+              </td>
+              <td>
+                <span class="badge"
+                  ng-class="room.status === 'Vacant' ? 'badge-success' : 'badge-danger'">
+                  {{ room.status }}
+                </span>
+              </td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-info btn-sm" ng-click="viewOccupants(room)">👥</button>
+                <button class="btn btn-warning btn-sm" ng-click="editRoom(room)">Edit</button>
+                <button class="btn btn-danger btn-sm" ng-click="deleteRoom(room._id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Occupants panel -->
+      <div class="table-card mt-4" ng-if="selectedRoom">
+        <div class="table-header">
+          <h4 style="margin:0;">Occupants — Room {{ selectedRoom.roomNumber }}</h4>
+          <button class="btn btn-danger btn-sm" ng-click="closeOccupants()">Close</button>
+        </div>
+        <div ng-if="occupants.length === 0" class="text-muted" style="padding:12px 0;">
+          No tenants currently in this room.
+        </div>
+        <table ng-if="occupants.length > 0">
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Move-In</th></tr></thead>
+          <tbody>
+            <tr ng-repeat="o in occupants">
+              <td>{{ o.name }}</td>
+              <td>{{ o.email }}</td>
+              <td>{{ o.phone }}</td>
+              <td>{{ o.moveInDate | date:'mediumDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ── Add / Edit Room Form ─────────────────────────────── -->
     <div class="form-card">
-      <h4 style="margin-bottom:18px;">
-        {{ editMode ? 'Edit Room' : 'Add New Room' }}
-      </h4>
+      <h4 style="margin-bottom:18px;">{{ editMode ? 'Edit Room' : 'Add New Room' }}</h4>
 
       <form ng-submit="saveRoom()">
         <div class="form-group">
@@ -65,7 +94,7 @@
         </div>
         <div class="form-group">
           <label>Type</label>
-          <select class="form-control" ng-model="newRoom.type" required>
+          <select class="pg-select" ng-model="newRoom.type" required>
             <option value="Single">Single (1 person)</option>
             <option value="Double">Double (2 sharing)</option>
             <option value="Triple">Triple (3 sharing)</option>
@@ -74,9 +103,9 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Price Per Month (₹)</label>
+          <label>Price Per Person / Month (₹)</label>
           <input type="number" class="form-control"
-                 ng-model="newRoom.pricePerMonth" placeholder="e.g. 5000" required>
+                 ng-model="newRoom.pricePerMonth" placeholder="e.g. 2000" required>
         </div>
         <div class="form-group">
           <label>Amenities</label>

@@ -9,11 +9,12 @@
     <!-- ── Stat Cards ────────────────────────────────────────── -->
     <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
 
-      <div class="stat-card">
+      <div class="stat-card" style="cursor:pointer;" ng-click="openEditProfile()">
         <div class="stat-number" style="font-size:26px;">{{ profile.name }}</div>
         <div class="stat-label">My Account</div>
         <div class="text-muted mt-2">{{ profile.email }}</div>
         <div class="text-muted">{{ profile.phone }}</div>
+        <div style="margin-top:8px;font-size:12px;color:var(--accent);">Edit Profile ✎</div>
       </div>
 
       <div class="stat-card" ng-if="profile.roomId" style="border-top-color:#3498db;">
@@ -43,6 +44,67 @@
         </div>
       </div>
 
+      <div class="stat-card" style="border-top-color:#1abc9c;" ng-if="lastReceipt">
+        <div class="stat-number" style="font-size:20px;">
+          {{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][lastReceipt.month-1] }}
+          {{ lastReceipt.year }}
+        </div>
+        <div class="stat-label">Last Receipt</div>
+        <div class="mt-2">
+          <span class="badge"
+            ng-class="{
+              'badge-warning': lastReceipt.status==='Pending',
+              'badge-success': lastReceipt.status==='Confirmed',
+              'badge-danger':  lastReceipt.status==='Rejected'
+            }">{{ lastReceipt.status }}</span>
+        </div>
+        <div class="text-muted mt-2">
+          <a href="#!/tenant/rent" style="color:var(--accent);">View history</a>
+        </div>
+      </div>
+
+      <div class="stat-card" style="border-top-color:#1abc9c;" ng-if="!lastReceipt">
+        <div class="stat-number" style="font-size:24px;">—</div>
+        <div class="stat-label">No Receipts Yet</div>
+        <div class="text-muted mt-2">
+          <a href="#!/tenant/rent" style="color:var(--accent);">Submit one</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Profile Edit Modal ───────────────────────────────── -->
+    <div class="table-card mt-4" ng-if="editingProfile">
+      <div class="table-header">
+        <h4 style="margin:0;">Edit Profile</h4>
+        <button class="btn btn-danger btn-sm" ng-click="cancelEditProfile()">Cancel</button>
+      </div>
+      <div style="max-width:440px;margin-top:16px;">
+        <div class="alert alert-danger" ng-if="profileMessage && profileMessage.indexOf('updated') === -1">{{ profileMessage }}</div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" class="form-control" ng-model="profileForm.name" required>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" class="form-control" ng-model="profileForm.phone" required>
+        </div>
+        <hr>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Leave password fields blank to keep current password.</p>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" class="form-control" ng-model="profileForm.currentPassword">
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" class="form-control" ng-model="profileForm.newPassword">
+        </div>
+        <button class="btn btn-success" ng-click="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+
+    <div class="alert alert-success mt-4" ng-if="profileMessage && profileMessage.indexOf('updated') !== -1">
+      {{ profileMessage }}
     </div>
 
     <!-- ── Room Amenities ────────────────────────────────────── -->
@@ -153,7 +215,7 @@
 
         <div class="form-group">
           <label>Sleep Schedule</label>
-          <select class="form-control" ng-model="prefForm.preferences.sleepSchedule">
+          <select class="pg-select" ng-model="prefForm.preferences.sleepSchedule">
             <option value="Early Bird">Early Bird</option>
             <option value="Night Owl">Night Owl</option>
             <option value="Flexible">Flexible</option>
@@ -162,7 +224,7 @@
 
         <div class="form-group">
           <label>Guest Policy</label>
-          <select class="form-control" ng-model="prefForm.preferences.guestPolicy">
+          <select class="pg-select" ng-model="prefForm.preferences.guestPolicy">
             <option value="No Guests">No Guests</option>
             <option value="Occasional">Occasional</option>
             <option value="Frequent">Frequent</option>

@@ -1,0 +1,73 @@
+<!-- views/admin/rent.html — Review tenant rent receipts -->
+<div class="main-content">
+  <h2 class="page-title">Rent Receipts</h2>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Room</th>
+          <th>Period</th>
+          <th>Amount (₹)</th>
+          <th>Reference</th>
+          <th>Submitted</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="receipts.length === 0">
+          <td colspan="8" style="text-align:center;color:#aaa;padding:20px;">
+            No rent receipts submitted yet.
+          </td>
+        </tr>
+        <tr ng-repeat="r in receipts">
+          <td>{{ r.tenantId.name }}</td>
+          <td>{{ r.roomId.roomNumber }}</td>
+          <td>{{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][r.month-1] }} {{ r.year }}</td>
+          <td>₹{{ r.amount }}</td>
+          <td><small>{{ r.referenceNote }}</small></td>
+          <td>{{ r.createdAt | date:'mediumDate' }}</td>
+          <td>
+            <span class="badge" ng-class="statusClass(r.status)">{{ r.status }}</span>
+          </td>
+          <td>
+            <button class="btn btn-primary btn-sm" ng-click="open(r)"
+                    ng-if="r.status === 'Pending'">Review</button>
+            <button class="btn btn-warning btn-sm" ng-click="open(r)"
+                    ng-if="r.status !== 'Pending'">Update</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Review panel -->
+  <div class="form-card mt-4" ng-if="selected">
+    <h4 style="margin-bottom:16px;">
+      Review Receipt — {{ selected.tenantId.name }} ·
+      {{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][selected.month-1] }}
+      {{ selected.year }}
+    </h4>
+    <p class="text-muted" style="margin-bottom:16px;">
+      Amount: <strong>₹{{ selected.amount }}</strong> &nbsp;|&nbsp;
+      Reference: <strong>{{ selected.referenceNote }}</strong>
+    </p>
+    <div class="form-group">
+      <label>Decision</label>
+      <select class="pg-select" ng-model="newStatus">
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirm Payment</option>
+        <option value="Rejected">Reject</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Note to Tenant <small class="text-muted">(optional)</small></label>
+      <input type="text" class="form-control" ng-model="adminNote"
+             placeholder="e.g. Amount received, thank you">
+    </div>
+    <button class="btn btn-success" ng-click="updateReceipt()">Save</button>
+    <button class="btn btn-danger" ng-click="selected = null" style="margin-left:10px;">Cancel</button>
+  </div>
+</div>

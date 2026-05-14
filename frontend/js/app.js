@@ -47,6 +47,12 @@ app.config(function($routeProvider, $locationProvider) {
       controller:  'NoticeAdminCtrl'
     })
 
+    // ── Admin Rent Route ─────────────────────────────────────
+    .when('/admin/rent', {
+      templateUrl: 'views/admin/rent.html',
+      controller:  'RentAdminCtrl'
+    })
+
     // ── Tenant Routes ────────────────────────────────────────
     .when('/tenant/dashboard', {
       templateUrl: 'views/tenant/dashboard.html',
@@ -63,6 +69,10 @@ app.config(function($routeProvider, $locationProvider) {
     .when('/tenant/matcher', {
       templateUrl: 'views/tenant/matcher.html',
       controller:  'MatcherCtrl'
+    })
+    .when('/tenant/rent', {
+      templateUrl: 'views/tenant/rent.html',
+      controller:  'RentTenantCtrl'
     })
 
     // ── Default redirect ─────────────────────────────────────
