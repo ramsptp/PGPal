@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PGPal — Project Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Times New Roman', serif; font-size: 13pt; color: #111; background: #fff; }
+
+  /* Page breaks */
+  .page-break { page-break-after: always; }
+
+  /* Cover */
+  .cover {
+    text-align: center;
+    padding: 80px 60px;
+    border: 3px double #333;
+    margin: 40px;
+    min-height: 93vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+  }
+  .cover .college { font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+  .cover .dept    { font-size: 12pt; margin-top: 4px; }
+  .cover .title   { font-size: 24pt; font-weight: bold; margin: 36px 0 10px; text-decoration: underline; }
+  .cover .subtitle{ font-size: 14pt; color: #444; }
+  .cover .label   { font-size: 11pt; color: #555; margin-top: 30px; }
+  .cover .name    { font-size: 13pt; font-weight: bold; }
+  .cover .year    { font-size: 11pt; margin-top: 30px; color: #555; }
+  .cover hr       { width: 60%; border: 1px solid #999; margin: 20px 0; }
+
+  /* Content pages */
+  .content { padding: 50px 70px; }
+  h1 { font-size: 18pt; text-align: center; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+  h2 { font-size: 14pt; margin: 28px 0 10px; color: #111; }
+  h3 { font-size: 12pt; margin: 18px 0 8px; color: #333; }
+  p  { text-align: justify; line-height: 1.8; margin-bottom: 10px; }
+  ul, ol { margin: 8px 0 12px 28px; line-height: 1.8; }
+  li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 11pt; }
+  th { background: #eee; border: 1px solid #999; padding: 8px 12px; text-align: left; font-weight: bold; }
+  td { border: 1px solid #ccc; padding: 7px 12px; vertical-align: top; }
+  .section-num { color: #555; }
+  code { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 1px 5px; font-size: 10pt; border: 1px solid #ddd; }
+  pre  { font-family: 'Courier New', monospace; background: #f5f5f5; border: 1px solid #ccc; padding: 14px; font-size: 9.5pt; line-height: 1.5; margin: 12px 0; white-space: pre-wrap; }
+  .toc-entry { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dotted #ccc; font-size: 12pt; }
+  .algo-box { background: #f9f9f9; border: 1px solid #bbb; border-left: 4px solid #333; padding: 14px 18px; margin: 12px 0; }
+  .center { text-align: center; }
+  @media print {
+    body { font-size: 12pt; }
+    .content { padding: 30px 50px; }
+    .cover { margin: 0; border: 3px double #333; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="college">A Project Report On</div>
+  <div class="title">PGPal</div>
+  <div class="subtitle">A Paying Guest Management System</div>
+  <hr>
+  <div class="label">Submitted in partial fulfillment of the requirements for the degree of</div>
+  <div class="name">Master of Computer Applications (MCA)</div>
+  <hr>
+  <div class="label">Submitted by:</div>
+  <div class="name">Abhiram P T P</div>
+  <div class="dept">Department of Computer Applications</div>
+  <br>
+  <div class="label">Academic Year</div>
+  <div class="name">2025 – 2026</div>
+</div>
+<div class="page-break"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+══════════════════════════════════════════════════════════ -->
+<div class="content">
+  <h1>Table of Contents</h1>
+  <div class="toc-entry"><span>1. Abstract</span><span>3</span></div>
+  <div class="toc-entry"><span>2. Introduction</span><span>3</span></div>
+  <div class="toc-entry"><span>3. Problem Statement</span><span>4</span></div>
+  <div class="toc-entry"><span>4. Objectives</span><span>4</span></div>
+  <div class="toc-entry"><span>5. Technology Stack</span><span>5</span></div>
+  <div class="toc-entry"><span>6. System Architecture</span><span>5</span></div>
+  <div class="toc-entry"><span>7. Database Design</span><span>6</span></div>
+  <div class="toc-entry"><span>8. Module Description</span><span>8</span></div>
+  <div class="toc-entry"><span>9. Roommate Matcher Algorithm</span><span>11</span></div>
+  <div class="toc-entry"><span>10. API Endpoints</span><span>12</span></div>
+  <div class="toc-entry"><span>11. Security Implementation</span><span>13</span></div>
+  <div class="toc-entry"><span>12. Conclusion</span><span>14</span></div>
+</div>
+<div class="page-break"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTIONS
+══════════════════════════════════════════════════════════ -->
+<div class="content">
+
+  <h1>PGPal — Project Report</h1>
+
+  <!-- Demo Credentials -->
+  <h2>Demo Credentials</h2>
+  <table>
+    <tr><th>Role</th><th>Email</th><th>Password</th></tr>
+    <tr><td><strong>Admin</strong></td><td>admin@pgpal.com</td><td>Admin@123</td></tr>
+    <tr><td>Tenant 1</td><td>arjun@pgpal.com</td><td>Arjun@123</td></tr>
+    <tr><td>Tenant 2</td><td>meera@pgpal.com</td><td>Meera@123</td></tr>
+  </table>
+  <p>Application runs at: <code>http://localhost:3020</code></p>
+
+  <!-- 1. Abstract -->
+  <h2>1. Abstract</h2>
+  <p>PGPal is a web-based Paying Guest (PG) Management System developed using the MEAN stack — MongoDB, Express.js, AngularJS (v1.x), and Node.js. The system provides a comprehensive digital platform for managing PG accommodations, covering room allotment, tenant registration, rent tracking, maintenance complaint management, and notice board communication. A distinguishing feature is the <strong>Roommate Matcher</strong>, a logic-driven algorithm that compares tenant lifestyle preferences using a weighted scoring model to suggest compatible roommates. The application implements JWT-based authentication with role-based access control to separate administrative and tenant functionality.</p>
+
+  <!-- 2. Introduction -->
+  <h2>2. Introduction</h2>
+  <p>Paying Guest (PG) accommodations are a widely prevalent form of housing in India, particularly among students and working professionals. Managing a PG facility manually — tracking room occupancy, collecting rent, handling maintenance complaints, and communicating notices — is time-consuming and error-prone.</p>
+  <p>PGPal digitises this entire workflow into a single web application. Administrators gain a real-time overview of their facility through a data-rich dashboard, while tenants can manage their stay, track rent payments, and communicate maintenance issues from any web browser.</p>
+  <p>The project is built strictly on the MEAN stack as required, using AngularJS 1.x (with <code>ng-app</code>, <code>ng-controller</code>, <code>$scope</code>, and <code>$http</code>) for the frontend, Node.js with Express.js for the backend API, and MongoDB Atlas as the cloud-hosted NoSQL database. All data exchange between the frontend and backend is performed in JSON format via RESTful API endpoints.</p>
+
+  <!-- 3. Problem Statement -->
+  <h2>3. Problem Statement</h2>
+  <p>Traditional PG management relies on physical registers, manual receipts, and informal communication. This leads to several challenges:</p>
+  <ul>
+    <li>Difficulty tracking room occupancy and vacancy status in real time.</li>
+    <li>Lack of a formal channel for tenants to report maintenance issues.</li>
+    <li>No structured system for rent payment acknowledgment.</li>
+    <li>No mechanism for matching compatible roommates, leading to friction among co-tenants.</li>
+    <li>Communication between admin and tenants is informal and unreliable.</li>
+  </ul>
+  <p>PGPal addresses all of these problems through a structured, role-based web application.</p>
+
+  <!-- 4. Objectives -->
+  <h2>4. Objectives</h2>
+  <ul>
+    <li>Develop a full-stack web application using the MEAN stack for PG facility management.</li>
+    <li>Implement role-based access control distinguishing Admin and Tenant users.</li>
+    <li>Provide Admin with CRUD operations for rooms, tenant management, maintenance oversight, and notice posting.</li>
+    <li>Enable Tenants to view their room details, submit maintenance requests, check notices, submit rent receipts, and edit their preferences.</li>
+    <li>Implement a Roommate Matcher algorithm using weighted comparison of JSON preference attributes.</li>
+    <li>Use MongoDB Atlas as the cloud database with Mongoose ODM for schema enforcement.</li>
+    <li>Secure all API routes with JSON Web Tokens (JWT).</li>
+  </ul>
+
+</div>
+<div class="page-break"></div>
+<div class="content">
+
+  <!-- 5. Technology Stack -->
+  <h2>5. Technology Stack</h2>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+    <tr><td>Database</td><td>MongoDB Atlas (NoSQL)</td><td>Cloud-hosted document store for all application data</td></tr>
+    <tr><td>Backend</td><td>Node.js + Express.js</td><td>RESTful API server, business logic, authentication</td></tr>
+    <tr><td>Frontend</td><td>AngularJS 1.8.x</td><td>Single Page Application with <code>$routeProvider</code>, controllers, <code>$http</code></td></tr>
+    <tr><td>ODM</td><td>Mongoose</td><td>Schema definition, validation, pre-save hooks</td></tr>
+    <tr><td>Auth</td><td>JWT + bcryptjs</td><td>Stateless authentication, password hashing</td></tr>
+    <tr><td>Styling</td><td>CSS3 + Bootstrap 4</td><td>Responsive layout, custom dark mode</td></tr>
+    <tr><td>Runtime</td><td>Node.js v18+</td><td>JavaScript server environment</td></tr>
+  </table>
+
+  <!-- 6. Architecture -->
+  <h2>6. System Architecture</h2>
+  <p>PGPal follows a three-tier client-server architecture:</p>
+  <ul>
+    <li><strong>Presentation Layer (Frontend):</strong> AngularJS 1.x SPA served as static files. Client-side routing via <code>ngRoute</code>. All API communication through AngularJS <code>$http</code> service.</li>
+    <li><strong>Application Layer (Backend):</strong> Express.js server exposes RESTful API endpoints. JWT middleware validates every protected route. Business logic (e.g., Roommate Matcher scoring) resides here.</li>
+    <li><strong>Data Layer (Database):</strong> MongoDB Atlas cluster stores all documents. Mongoose provides schema validation and lifecycle hooks.</li>
+  </ul>
+
+  <h3>Folder Structure</h3>
+  <pre>PGPal/
+├── backend/
+│   ├── middleware/
+│   │   └── auth.js          ← JWT verification, adminOnly guard
+│   ├── models/
+│   │   ├── Room.js           ← Room schema with pre-save status hook
+│   │   ├── Tenant.js         ← Tenant schema with preferences
+│   │   ├── Maintenance.js    ← Complaint schema
+│   │   ├── Notice.js         ← Admin notice schema
+│   │   └── RentPayment.js    ← Rent receipt schema
+│   ├── routes/
+│   │   ├── auth.js           ← Login, Register
+│   │   ├── rooms.js          ← Room CRUD + occupants
+│   │   ├── tenants.js        ← Tenant management
+│   │   ├── maintenance.js    ← Complaint endpoints
+│   │   ├── notices.js        ← Notice board
+│   │   ├── rent.js           ← Rent receipt flow
+│   │   └── matcher.js        ← Roommate algorithm
+│   ├── server.js             ← App entry point
+│   └── seed.js               ← Admin account seeder
+└── frontend/
+    ├── css/style.css
+    ├── js/
+    │   ├── app.js            ← Module, routing, factories
+    │   └── controllers.js    ← All AngularJS controllers
+    ├── views/
+    │   ├── admin/            ← 6 admin view templates
+    │   └── tenant/           ← 5 tenant view templates
+    └── index.html            ← SPA shell with ng-app</pre>
+
+</div>
+<div class="page-break"></div>
+<div class="content">
+
+  <!-- 7. Database Design -->
+  <h2>7. Database Design</h2>
+  <p>MongoDB is a NoSQL document database. PGPal uses five Mongoose schemas (collections):</p>
+
+  <h3>7.1 Room Schema</h3>
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td>roomNumber</td><td>String (unique)</td><td>Identifier e.g. "101", "A-202"</td></tr>
+    <tr><td>type</td><td>Enum</td><td>Single / Double / Triple / Quad / 5-Sharing</td></tr>
+    <tr><td>pricePerMonth</td><td>Number</td><td>Rent per person per month in ₹</td></tr>
+    <tr><td>capacity</td><td>Number</td><td>Auto-derived from type via pre-save hook</td></tr>
+    <tr><td>occupiedBeds</td><td>Number</td><td>Current number of tenants in room</td></tr>
+    <tr><td>amenities</td><td>Array&lt;String&gt;</td><td>["AC", "WiFi", "Attached Bathroom"]</td></tr>
+    <tr><td>status</td><td>Enum</td><td>Vacant / Occupied — auto-computed by hook</td></tr>
+  </table>
+  <p><strong>Key Design:</strong> A <code>pre('save')</code> Mongoose hook automatically sets <code>capacity</code> from the room type and recalculates <code>status</code> every time the document is saved, ensuring data consistency without manual updates.</p>
+
+  <h3>7.2 Tenant Schema</h3>
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td>name, email, phone</td><td>String</td><td>Basic identity fields</td></tr>
+    <tr><td>password</td><td>String</td><td>bcrypt-hashed, never returned in API responses</td></tr>
+    <tr><td>role</td><td>Enum</td><td>"admin" or "tenant" — single collection for both</td></tr>
+    <tr><td>roomId</td><td>ObjectId (ref: Room)</td><td>Foreign key reference to assigned room</td></tr>
+    <tr><td>moveInDate</td><td>Date</td><td>Updated when admin assigns a room</td></tr>
+    <tr><td>rentDueDay</td><td>Number</td><td>Day of month rent is due (1–28)</td></tr>
+    <tr><td>roomPreferences</td><td>Array&lt;String&gt;</td><td>Preferred room types for admin guidance</td></tr>
+    <tr><td>preferences</td><td>Object</td><td>sleepSchedule, guestPolicy, hobbies — for matcher</td></tr>
+  </table>
+
+  <h3>7.3 Maintenance Schema</h3>
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td>tenantId, roomId</td><td>ObjectId refs</td><td>Who filed the request and from which room</td></tr>
+    <tr><td>title, description</td><td>String</td><td>Short title and detailed description</td></tr>
+    <tr><td>status</td><td>Enum</td><td>Pending / In Progress / Resolved</td></tr>
+    <tr><td>adminNote</td><td>String</td><td>Admin's update message to tenant</td></tr>
+  </table>
+
+  <h3>7.4 Notice Schema</h3>
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td>title, message</td><td>String</td><td>Notice content</td></tr>
+    <tr><td>targetType</td><td>Enum</td><td>General / Room</td></tr>
+  </table>
+
+  <h3>7.5 RentPayment Schema</h3>
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td>tenantId, roomId</td><td>ObjectId refs</td><td>Who paid and which room</td></tr>
+    <tr><td>month, year</td><td>Number</td><td>Period the payment covers</td></tr>
+    <tr><td>amount</td><td>Number</td><td>Amount claimed by tenant</td></tr>
+    <tr><td>referenceNote</td><td>String</td><td>UPI/bank transaction reference</td></tr>
+    <tr><td>status</td><td>Enum</td><td>Pending / Confirmed / Rejected</td></tr>
+    <tr><td>adminNote</td><td>String</td><td>Admin's note on decision</td></tr>
+  </table>
+
+</div>
+<div class="page-break"></div>
+<div class="content">
+
+  <!-- 8. Module Description -->
+  <h2>8. Module Description</h2>
+
+  <h3>8.1 Authentication Module</h3>
+  <p>Both admins and tenants are stored in the same <code>Tenant</code> collection, differentiated by a <code>role</code> field. On login, the server validates credentials using <code>bcrypt.compare()</code> and issues a signed JWT with a 24-hour expiry containing the user's ID and role. The token is stored in <code>localStorage</code> on the client.</p>
+  <p>An AngularJS HTTP interceptor automatically attaches the token as a <code>Bearer</code> header to every outgoing <code>$http</code> request. A response interceptor detects HTTP 401 responses (expired/missing token) and automatically redirects the user to the login page, clearing local storage.</p>
+
+  <h3>8.2 Admin Module</h3>
+  <ul>
+    <li><strong>Dashboard:</strong> Displays total rooms, occupied/vacant count, bed-based occupancy rate (%), expected monthly revenue (pricePerMonth × occupiedBeds), confirmed rent collected this month, total tenants, unassigned tenants, pending maintenance complaints, and pending rent receipts. Recent maintenance requests and recently joined tenants are shown in side-by-side tables.</li>
+    <li><strong>Room Management:</strong> Full CRUD for rooms. Room type automatically determines bed capacity via Mongoose hook. Admin can search/filter rooms and click a 👥 button to view current occupants of any room.</li>
+    <li><strong>Tenant Management:</strong> View all tenants with their room preferences shown as tags. Admin can assign/reassign rooms, vacate tenants, edit tenant details (name, phone, rent due day), and print the tenant list. Inline row editing replaces the selected row with editable fields.</li>
+    <li><strong>Maintenance Log:</strong> View all complaints across all tenants. Admin can update status (Pending → In Progress → Resolved) and add a note that tenants will see.</li>
+    <li><strong>Notice Board:</strong> Post general text notices and delete old ones.</li>
+    <li><strong>Rent Receipts:</strong> Review all payment claims. Confirm or reject each with an optional note to the tenant.</li>
+  </ul>
+
+  <h3>8.3 Tenant Module</h3>
+  <ul>
+    <li><strong>Dashboard:</strong> Shows tenant's name and contact, assigned room details and price, days until next rent due date (computed dynamically), open complaint count, last receipt status, latest 3 notices, and recent maintenance requests. Clicking the profile card opens an inline form to edit name, phone, and password. A separate section allows editing roommate preferences and room type preferences.</li>
+    <li><strong>Maintenance Requests:</strong> Submit new complaints with title and description. View all own requests with current status and admin notes.</li>
+    <li><strong>Notice Board:</strong> Read-only view of all general notices posted by admin.</li>
+    <li><strong>Rent Payments:</strong> Submit payment claims (month, amount, UPI/bank reference). System prevents duplicate submissions for the same period. View full payment history with admin decision status.</li>
+    <li><strong>Roommate Matcher:</strong> Displays compatibility scores with all other tenants sorted from most to least compatible.</li>
+  </ul>
+
+</div>
+<div class="page-break"></div>
+<div class="content">
+
+  <!-- 9. Roommate Matcher -->
+  <h2>9. Roommate Matcher Algorithm</h2>
+  <p>The Roommate Matcher is the unique special-logic feature of PGPal. It compares the lifestyle preference attributes stored in each tenant's profile and produces a compatibility score (0–100+) for every pair.</p>
+
+  <h3>9.1 Preference Attributes</h3>
+  <ul>
+    <li><strong>Sleep Schedule:</strong> "Early Bird", "Night Owl", or "Flexible"</li>
+    <li><strong>Guest Policy:</strong> "No Guests", "Occasional", or "Frequent"</li>
+    <li><strong>Hobbies:</strong> Free-form list e.g. ["Reading", "Gaming", "Music"]</li>
+  </ul>
+
+  <h3>9.2 Scoring Weights</h3>
+  <table>
+    <tr><th>Attribute</th><th>Points if Matched</th><th>Rationale</th></tr>
+    <tr><td>Sleep Schedule</td><td>50</td><td>Most impactful lifestyle factor for cohabitation</td></tr>
+    <tr><td>Guest Policy</td><td>30</td><td>Directly affects shared space comfort</td></tr>
+    <tr><td>Each Shared Hobby</td><td>10 each</td><td>Bonus social compatibility points</td></tr>
+  </table>
+
+  <h3>9.3 Algorithm</h3>
+  <div class="algo-box">
+    <strong>Input:</strong> Preferences of the logged-in tenant (P1) and all other tenants (P2 ... Pn)<br><br>
+    <strong>For each other tenant Pi:</strong><br>
+    &nbsp;&nbsp;score = 0<br>
+    &nbsp;&nbsp;IF P1.sleepSchedule == Pi.sleepSchedule → score += 50<br>
+    &nbsp;&nbsp;IF P1.guestPolicy == Pi.guestPolicy → score += 30<br>
+    &nbsp;&nbsp;sharedHobbies = intersection(P1.hobbies, Pi.hobbies)<br>
+    &nbsp;&nbsp;score += |sharedHobbies| × 10<br><br>
+    <strong>Output:</strong> All tenants sorted in descending order of score
+  </div>
+
+  <h3>9.4 Implementation</h3>
+  <p>The algorithm runs server-side in <code>backend/routes/matcher.js</code>. This prevents exposing all tenant preferences to the client. The route is protected by JWT middleware, ensuring only authenticated tenants can request matches. Results are returned as a JSON array with each entry containing the tenant's name, room number, score, and list of shared hobbies.</p>
+
+  <!-- 10. API Endpoints -->
+  <h2>10. API Endpoints</h2>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr>
+    <tr><td>POST</td><td>/api/auth/register</td><td>Public</td><td>Register new tenant</td></tr>
+    <tr><td>POST</td><td>/api/auth/login</td><td>Public</td><td>Login, returns JWT</td></tr>
+    <tr><td>GET</td><td>/api/rooms</td><td>All logged in</td><td>List all rooms</td></tr>
+    <tr><td>GET</td><td>/api/rooms/stats</td><td>All logged in</td><td>Room count summary</td></tr>
+    <tr><td>GET</td><td>/api/rooms/:id/occupants</td><td>Admin</td><td>Tenants in a room</td></tr>
+    <tr><td>POST</td><td>/api/rooms</td><td>Admin</td><td>Add new room</td></tr>
+    <tr><td>PUT</td><td>/api/rooms/:id</td><td>Admin</td><td>Update room</td></tr>
+    <tr><td>DELETE</td><td>/api/rooms/:id</td><td>Admin</td><td>Delete room</td></tr>
+    <tr><td>GET</td><td>/api/tenants</td><td>Admin</td><td>All tenants</td></tr>
+    <tr><td>GET</td><td>/api/tenants/me</td><td>Tenant</td><td>Own profile</td></tr>
+    <tr><td>PUT</td><td>/api/tenants/me/profile</td><td>Tenant</td><td>Edit own profile</td></tr>
+    <tr><td>PUT</td><td>/api/tenants/me/preferences</td><td>Tenant</td><td>Update preferences</td></tr>
+    <tr><td>PUT</td><td>/api/tenants/:id/assign-room</td><td>Admin</td><td>Assign room to tenant</td></tr>
+    <tr><td>PUT</td><td>/api/tenants/:id/vacate</td><td>Admin</td><td>Remove from room</td></tr>
+    <tr><td>PUT</td><td>/api/tenants/:id/edit</td><td>Admin</td><td>Edit tenant details</td></tr>
+    <tr><td>DELETE</td><td>/api/tenants/:id</td><td>Admin</td><td>Remove tenant</td></tr>
+    <tr><td>GET</td><td>/api/maintenance</td><td>Both*</td><td>Complaints (filtered by role)</td></tr>
+    <tr><td>POST</td><td>/api/maintenance</td><td>Tenant</td><td>File new complaint</td></tr>
+    <tr><td>PUT</td><td>/api/maintenance/:id</td><td>Admin</td><td>Update complaint status</td></tr>
+    <tr><td>GET</td><td>/api/notices</td><td>All logged in</td><td>General notices</td></tr>
+    <tr><td>POST</td><td>/api/notices</td><td>Admin</td><td>Post notice</td></tr>
+    <tr><td>DELETE</td><td>/api/notices/:id</td><td>Admin</td><td>Delete notice</td></tr>
+    <tr><td>GET</td><td>/api/rent</td><td>Both*</td><td>Receipts (filtered by role)</td></tr>
+    <tr><td>POST</td><td>/api/rent</td><td>Tenant</td><td>Submit payment receipt</td></tr>
+    <tr><td>PUT</td><td>/api/rent/:id</td><td>Admin</td><td>Confirm/reject receipt</td></tr>
+    <tr><td>GET</td><td>/api/matcher</td><td>Tenant</td><td>Compatibility scores</td></tr>
+  </table>
+  <p><small>* Tenants see only their own records; admins see all.</small></p>
+
+</div>
+<div class="page-break"></div>
+<div class="content">
+
+  <!-- 11. Security -->
+  <h2>11. Security Implementation</h2>
+  <ul>
+    <li><strong>Password Hashing:</strong> All passwords are hashed using <code>bcryptjs</code> with a salt round of 10 before being stored. Plaintext passwords are never persisted.</li>
+    <li><strong>JWT Authentication:</strong> On successful login, a JWT is issued signed with a secret key stored in environment variables (<code>.env</code>). The token expires in 24 hours.</li>
+    <li><strong>Middleware Guards:</strong> Every API route (except login and register) passes through <code>verifyToken</code> middleware. Admin-only routes additionally pass through <code>adminOnly</code> middleware.</li>
+    <li><strong>Role Separation:</strong> Even if a tenant guesses an admin route URL, the server returns HTTP 403. The JWT payload is decoded on every request — roles cannot be spoofed client-side.</li>
+    <li><strong>Client-side Expiry Handling:</strong> An AngularJS HTTP response interceptor watches for 401 responses. When detected, it clears localStorage and redirects to the login page automatically.</li>
+    <li><strong>Environment Variables:</strong> The MongoDB URI and JWT secret are stored in a <code>.env</code> file excluded from version control via <code>.gitignore</code>.</li>
+    <li><strong>Password never returned:</strong> All Mongoose queries that return tenant data use <code>.select('-password')</code> to exclude the hashed password field from API responses.</li>
+  </ul>
+
+  <!-- 12. Conclusion -->
+  <h2>12. Conclusion</h2>
+  <p>PGPal successfully demonstrates a complete, functional web application built on the MEAN stack. The system covers all aspects of PG management from room allocation to rent verification, while the Roommate Matcher feature introduces algorithmic logic that goes beyond basic CRUD functionality.</p>
+  <p>The application follows industry-standard practices including JWT-based stateless authentication, RESTful API design, NoSQL schema design with Mongoose, and client-side single-page application architecture with AngularJS 1.x. The separation of admin and tenant modules through role-based access control reflects real-world software design principles.</p>
+  <p>The project demonstrates the practical application of all core MCA curriculum topics including database management, web application development, client-server architecture, and software security.</p>
+
+  <br><br><br>
+  <p class="center"><strong>— End of Report —</strong></p>
+
+</div>
+</body>
+</html>

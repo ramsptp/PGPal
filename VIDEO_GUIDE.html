@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PGPal — Video Walkthrough Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12pt; color: #111; background: #fff; }
+  .page-break { page-break-after: always; }
+  .content { padding: 40px 60px; }
+  h1 { font-size: 20pt; text-align: center; margin-bottom: 6px; color: #1a1a2e; }
+  h2 { font-size: 14pt; margin: 28px 0 10px; color: #fff; background: #2c3e50; padding: 8px 14px; border-radius: 4px; }
+  h3 { font-size: 11pt; margin: 16px 0 6px; color: #2c3e50; text-transform: uppercase; letter-spacing: 0.5px; }
+  p  { line-height: 1.7; margin-bottom: 8px; }
+  ul, ol { margin: 6px 0 10px 24px; line-height: 1.8; }
+  li { margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #666; font-size: 11pt; margin-bottom: 30px; }
+  .step {
+    border: 1px solid #ddd;
+    border-left: 5px solid #3498db;
+    padding: 14px 18px;
+    margin: 12px 0;
+    border-radius: 0 6px 6px 0;
+    background: #f9fbff;
+  }
+  .step-num { font-size: 10pt; color: #3498db; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+  .say { background: #eafaf1; border: 1px solid #a9dfbf; border-left: 4px solid #27ae60; padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; }
+  .say::before { content: '🎤 Say: '; font-weight: bold; color: #27ae60; }
+  .show { background: #fef9e7; border: 1px solid #f9ca74; border-left: 4px solid #f39c12; padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; }
+  .show::before { content: '🖥 Show: '; font-weight: bold; color: #e67e22; }
+  .tip { background: #fdf2f8; border: 1px solid #d7bde2; border-left: 4px solid #8e44ad; padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; font-size: 10.5pt; }
+  .tip::before { content: '💡 Tip: '; font-weight: bold; color: #8e44ad; }
+  code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 2px 6px; font-size: 10pt; border-radius: 3px; border: 1px solid #ddd; }
+  .cred-box { background: #1a1a2e; color: #e8e8e8; padding: 16px 20px; border-radius: 8px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 11pt; line-height: 1.8; }
+  .cred-box span { color: #60b4f0; }
+  .timeline { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 10pt; color: #555; }
+  .time-badge { background: #2c3e50; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 9pt; font-weight: bold; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10.5pt; }
+  th { background: #2c3e50; color: #fff; padding: 8px 12px; text-align: left; }
+  td { border: 1px solid #ddd; padding: 7px 12px; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  .header-strip { background: linear-gradient(135deg, #2c3e50, #3d5a80); color: #fff; padding: 30px 60px; }
+  .header-strip h1 { color: #fff; }
+  .header-strip .subtitle { color: #aec6e8; }
+  @media print {
+    .content { padding: 25px 40px; }
+    .header-strip { padding: 20px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header-strip">
+  <h1>PGPal — Video Walkthrough Guide</h1>
+  <p class="subtitle">A script for recording the project demonstration video</p>
+</div>
+
+<div class="content">
+
+  <!-- Credentials -->
+  <h2>Login Credentials for Demo</h2>
+  <div class="cred-box">
+    <span>ADMIN</span><br>
+    Email:    admin@pgpal.com<br>
+    Password: Admin@123<br><br>
+    <span>TENANT 1</span><br>
+    Email:    arjun@pgpal.com<br>
+    Password: Arjun@123<br><br>
+    <span>TENANT 2</span><br>
+    Email:    meera@pgpal.com<br>
+    Password: Meera@123
+  </div>
+
+  <!-- Estimated time -->
+  <h2>Video Structure (Suggested: 8–12 minutes)</h2>
+  <table>
+    <tr><th>Section</th><th>Time</th></tr>
+    <tr><td>Introduction — what is PGPal</td><td>~1 min</td></tr>
+    <tr><td>Admin login + Dashboard walkthrough</td><td>~2 min</td></tr>
+    <tr><td>Room management (CRUD)</td><td>~1.5 min</td></tr>
+    <tr><td>Tenant management + assign room</td><td>~1.5 min</td></tr>
+    <tr><td>Maintenance + Notices</td><td>~1 min</td></tr>
+    <tr><td>Rent receipt review</td><td>~1 min</td></tr>
+    <tr><td>Tenant login + dashboard</td><td>~1 min</td></tr>
+    <tr><td>Roommate Matcher (highlight the algorithm)</td><td>~1 min</td></tr>
+    <tr><td>Dark mode + print + closing</td><td>~30 sec</td></tr>
+  </table>
+
+</div>
+<div class="page-break"></div>
+<div class="content">
+
+  <!-- SECTION 1 -->
+  <h2>Section 1 — Introduction</h2>
+  <div class="step">
+    <div class="step-num">Start with a blank browser tab</div>
+    <div class="say">Hello, my name is Abhiram. This is PGPal — a Paying Guest Management System built as my MCA project using the MEAN stack: MongoDB Atlas, Express.js, AngularJS version 1, and Node.js.</div>
+    <div class="show">Type http://localhost:3020 in the browser</div>
+    <div class="say">The application opens on the login page. PGPal has two roles — Admin and Tenant — each with their own dedicated set of features. All communication between the frontend and backend happens through RESTful APIs using JSON.</div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2>Section 2 — Admin Login and Dashboard</h2>
+  <div class="step">
+    <div class="step-num">Step 1 — Login as Admin</div>
+    <div class="show">Type admin@pgpal.com and Admin@123, click Login</div>
+    <div class="say">I'm logging in as the admin. The backend validates the credentials, hashes the password using bcryptjs, and on success returns a JSON Web Token which the frontend stores in localStorage and attaches to every future API call automatically.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2 — Admin Dashboard</div>
+    <div class="show">Point to the stat cards one by one</div>
+    <div class="say">The admin dashboard gives a complete overview at a glance. We have total rooms, occupied and vacant counts, the bed-based occupancy rate, expected monthly revenue — which is price per person multiplied by occupied beds — and the confirmed rent collected this month from tenant receipts. Below are the most recent maintenance requests and newly registered tenants.</div>
+    <div class="tip">Pause on the "Confirmed This Month" vs "Expected Revenue" cards — this is a good point to explain the business logic.</div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <h2>Section 3 — Room Management</h2>
+  <div class="step">
+    <div class="step-num">Step 3 — Navigate to Rooms</div>
+    <div class="show">Click "Rooms" in navbar</div>
+    <div class="say">The Rooms page shows all PG rooms with their type, price per person, current occupancy, amenities, and status. I can search rooms using the search bar here.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 4 — Show Add Room</div>
+    <div class="show">Fill the form on the right: Room "301", Type "Triple", Price "2500", add amenity "Fan"</div>
+    <div class="say">Adding a new room — I select "Triple" as the type. Notice that capacity is automatically set to 3. This is handled by a Mongoose pre-save hook in the Room model that derives capacity from the room type. This ensures data consistency — the admin cannot accidentally set a wrong capacity.</div>
+    <div class="show">Click Add Room, then click the 👥 button on an occupied room</div>
+    <div class="say">Clicking this button shows the current occupants of that room — their name, email, phone, and move-in date.</div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2>Section 4 — Tenant Management</h2>
+  <div class="step">
+    <div class="step-num">Step 5 — Tenants Page</div>
+    <div class="show">Click "Tenants" in navbar</div>
+    <div class="say">The Tenant Management page lists all registered tenants. I can see the room preferences they selected during registration — this tells me what type of sharing they are comfortable with. The "Next Rent Due" column shows the actual calendar date computed from their rent due day setting.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 6 — Assign Room</div>
+    <div class="show">Select a vacant room from the dropdown and click Assign for a tenant</div>
+    <div class="say">Assigning a room to a tenant. The dropdown only shows vacant rooms — rooms that still have available beds. When assigned, the room's occupied bed count increments and the status is automatically recalculated by the Mongoose hook. The tenant's move-in date is also updated to today.</div>
+    <div class="tip">This is a great point to explain the pre-save hook and how it prevents stale data.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 7 — Edit Tenant / Vacate</div>
+    <div class="show">Click Edit on a tenant row, change the Rent Due Day, save</div>
+    <div class="say">The row becomes editable inline. I can update name, phone, or rent due day without leaving the page. The Vacate button moves a tenant out of their room without deleting their account.</div>
+  </div>
+
+</div>
+<div class="page-break"></div>
+<div class="content">
+
+  <!-- SECTION 5 -->
+  <h2>Section 5 — Maintenance and Notices</h2>
+  <div class="step">
+    <div class="step-num">Step 8 — Maintenance Log</div>
+    <div class="show">Click Maintenance in navbar</div>
+    <div class="say">The admin sees all maintenance complaints filed by tenants. Each complaint has a status — Pending, In Progress, or Resolved. Clicking Update opens a form where the admin can change the status and add a note that the tenant will see on their dashboard.</div>
+    <div class="show">Click Update on a request, change to "In Progress", add a note, save</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 9 — Notices</div>
+    <div class="show">Click Notices, post a notice with a title and message</div>
+    <div class="say">The admin can post text-based notices. These appear on every tenant's Notice Board and are also previewed on the tenant dashboard. Tenants cannot post notices — only view them.</div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <h2>Section 6 — Rent Receipts (Admin side)</h2>
+  <div class="step">
+    <div class="step-num">Step 10 — Review Receipts</div>
+    <div class="show">Click Rent in navbar</div>
+    <div class="say">This is the Rent Receipt management page. When a tenant makes a payment, they submit a claim here with the month, amount, and their UPI or bank reference number. The admin can then confirm or reject the payment with a note. This creates a transparent, trackable rent history without a full payment gateway.</div>
+    <div class="show">Click Review on a Pending receipt, select Confirmed, save</div>
+    <div class="say">When confirmed, this payment is counted in the "Confirmed This Month" figure on the dashboard.</div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <h2>Section 7 — Tenant Login and Dashboard</h2>
+  <div class="step">
+    <div class="step-num">Step 11 — Logout and login as Tenant</div>
+    <div class="show">Click Logout, login with arjun@pgpal.com / Arjun@123</div>
+    <div class="say">Now logging in as a tenant. The AngularJS router automatically redirects to the tenant dashboard based on the role field inside the JWT payload.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 12 — Tenant Dashboard</div>
+    <div class="show">Point to each stat card</div>
+    <div class="say">The tenant dashboard shows their name and contact, the assigned room with price per person, a countdown of days until the next rent is due, their open complaint count, and the status of their last rent receipt. Below are the latest notices from admin and their complaint history.</div>
+    <div class="show">Click the profile card to open the edit form</div>
+    <div class="say">Tenants can edit their name, phone, and password inline. They can also update their roommate preferences — sleep schedule, guest policy, and hobbies — which feeds into the Roommate Matcher.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 13 — Submit Maintenance Request</div>
+    <div class="show">Click Maintenance, fill in title and description, submit</div>
+    <div class="say">A tenant can file a maintenance complaint from their maintenance page. It goes to the admin's log immediately and they can track the status here as the admin updates it.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 14 — Submit Rent Receipt</div>
+    <div class="show">Click Rent, fill the form with current month, amount, and a reference number</div>
+    <div class="say">The tenant submits their payment claim here. They select the month, enter the amount they paid, and their UPI transaction ID or bank reference. The system prevents submitting two claims for the same month. The admin then verifies and confirms or rejects it.</div>
+  </div>
+
+  <!-- SECTION 8 -->
+  <h2>Section 8 — Roommate Matcher (Algorithm Highlight)</h2>
+  <div class="step">
+    <div class="step-num">Step 15 — Roommate Matcher</div>
+    <div class="show">Click Roommate Matcher, let the cards load</div>
+    <div class="say">This is the Roommate Matcher — the special logic feature of PGPal. The algorithm runs on the server side. It compares the logged-in tenant's preferences against every other tenant using a weighted scoring model.</div>
+    <div class="show">Point to your own preferences box at the top, then point to the match cards</div>
+    <div class="say">Sleep schedule carries 50 points — it's the most critical lifestyle factor for cohabitation. Guest policy carries 30 points. Each shared hobby adds 10 bonus points. Results are sorted from most to least compatible. Green badge means high compatibility, yellow is moderate, red is low. The shared hobbies are explicitly listed on each card.</div>
+    <div class="tip">This is the most unique part of the project — spend 30 extra seconds explaining the weights. Mention that the algorithm is extensible — more attributes can be added by just adding weights.</div>
+  </div>
+
+  <!-- SECTION 9 -->
+  <h2>Section 9 — Additional Features and Closing</h2>
+  <div class="step">
+    <div class="step-num">Step 16 — Dark Mode</div>
+    <div class="show">Click the ☾ Dark button in navbar</div>
+    <div class="say">The application supports a carbon black dark mode. The preference is saved in localStorage so it persists across sessions and page refreshes.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 17 — Print Report (as Admin)</div>
+    <div class="show">Login as admin, go to Tenants, click the Print button</div>
+    <div class="say">Admins can print the full tenant list. Print-specific CSS hides the navigation, buttons, and forms and shows only a clean formatted table suitable for record-keeping.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">Step 18 — Closing</div>
+    <div class="say">PGPal demonstrates a complete, full-stack MEAN application covering authentication, role-based access control, CRUD operations, relational data with MongoDB, and a custom matching algorithm. Thank you.</div>
+  </div>
+
+  <br>
+  <h2>Key Points to Mention if Asked in Viva</h2>
+  <table>
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td>Why AngularJS 1.x and not Angular 2+?</td><td>Project specification required AngularJS 1.x with ng-app, $scope, and controllers. The architecture remains MVC on the client side.</td></tr>
+    <tr><td>Why MongoDB instead of SQL?</td><td>PG data is document-oriented. Tenant preferences are stored as nested JSON objects — this maps naturally to MongoDB documents. Schema flexibility also allowed adding the RentPayment feature without migrations.</td></tr>
+    <tr><td>How does JWT work here?</td><td>Login returns a signed token with user ID and role. Every API request sends it as Bearer header. The server verifies the signature — no session storage needed, making it stateless.</td></tr>
+    <tr><td>What is the Mongoose pre-save hook for?</td><td>It automatically recalculates room capacity from type and updates room status (Vacant/Occupied) whenever a room document is saved. This eliminates manual status management.</td></tr>
+    <tr><td>How does role-based access work?</td><td>Two middleware functions: verifyToken (checks JWT) and adminOnly (checks role field in decoded token). Admin routes use both. Tenant routes use only verifyToken.</td></tr>
+    <tr><td>What is the Roommate Matcher algorithm?</td><td>Weighted scoring: sleep schedule (50pts), guest policy (30pts), shared hobbies (10pts each). Runs server-side. Results sorted descending by score.</td></tr>
+    <tr><td>What database is used and why cloud?</td><td>MongoDB Atlas — cloud hosting means the app works from any machine without local DB setup. Ideal for academic demo environments.</td></tr>
+  </table>
+
+  <br><br>
+  <p style="text-align:center;color:#777;font-size:10pt;">PGPal — MCA Project | Video Guide</p>
+
+</div>
+</body>
+</html>
